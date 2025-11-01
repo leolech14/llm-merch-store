@@ -1,45 +1,6 @@
 import { kv } from '@vercel/kv';
 import { NextRequest, NextResponse } from 'next/server';
-
-/**
- * Order item structure
- */
-interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
-
-/**
- * Shipping address structure
- */
-interface ShippingAddress {
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-}
-
-/**
- * Complete order structure
- */
-interface Order {
-  orderId: string;
-  items: OrderItem[];
-  subtotal: number;
-  shipping: number;
-  total: number;
-  shippingAddress: ShippingAddress;
-  paymentStatus: 'PENDING' | 'CONFIRMED' | 'FAILED';
-  paymentHash?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Order, OrderItem, ShippingAddress } from '@/types/orders';
 
 const KV_PREFIX = 'order';
 const KV_TTL = 90 * 24 * 60 * 60; // 90 days in seconds
