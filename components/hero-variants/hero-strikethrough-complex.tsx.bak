@@ -1,0 +1,231 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingCart, MessageCircle } from "lucide-react";
+import { useState } from "react";
+
+/**
+ * Hero Strikethrough Variant
+ *
+ * Concept progression:
+ * ~~THIS IS A COSTUME~~
+ * ~~THIS IS A STORE~~
+ * THIS IS AN EXPERIMENT
+ *
+ * "In case this fails, please don't tell anyone!!!!"
+ */
+
+interface HeroStrikethroughProps {
+  visitorCount: number;
+  saleStatus: any;
+  onCTAClick?: () => void;
+}
+
+export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: HeroStrikethroughProps) {
+  const [stage, setStage] = useState<'initial' | 'choice' | 'serious' | 'ironic' | 'dontcare'>('initial');
+  const [line1Visible, setLine1Visible] = useState(true);
+  const [line2Visible, setLine2Visible] = useState(true);
+  const [line3Visible, setLine3Visible] = useState(true);
+  const [showPassed, setShowPassed] = useState(false);
+
+  const handleHateClick = () => {
+    // Sequential disappearance: Line 1 → Line 2 → Line 3 (100ms each)
+    setTimeout(() => setLine1Visible(false), 0);
+    setTimeout(() => setLine2Visible(false), 100);
+    setTimeout(() => {
+      setLine3Visible(false);
+      // Show choice screen
+      setStage('choice');
+    }, 200);
+  };
+
+  const handleMeTooClick = () => {
+    setStage('dontcare');
+  };
+
+  return (
+    <motion.section
+      id="hero"
+      className="w-full px-4 py-12 md:py-20"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="max-w-4xl mx-auto text-center space-y-8">
+        {/* Sequential Animation: Lines disappear, ME TOO! emerges with impact */}
+        <div className="relative min-h-[200px] md:min-h-[300px] flex items-center justify-center">
+          {stage === 'initial' && (
+            <div className="text-5xl md:text-7xl font-bold tracking-tight space-y-2">
+              {/* Line 1 - Disappears first */}
+              <AnimatePresence>
+                {line1Visible && (
+                  <motion.span
+                    className="block line-through text-muted-foreground/40 text-4xl md:text-5xl"
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                  >
+                    THIS IS A COSTUME
+                  </motion.span>
+                )}
+              </AnimatePresence>
+
+              {/* Line 2 - Disappears second */}
+              <AnimatePresence>
+                {line2Visible && (
+                  <motion.span
+                    className="block line-through text-muted-foreground/50 text-4xl md:text-6xl"
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                  >
+                    THIS IS A STORE
+                  </motion.span>
+                )}
+              </AnimatePresence>
+
+              {/* Line 3 - Disappears third, triggers ME TOO! */}
+              <AnimatePresence>
+                {line3Visible && (
+                  <motion.span
+                    className="block text-foreground text-5xl md:text-7xl"
+                    exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                  >
+                    THIS IS AN EXPERIMENT
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* ME TOO! + "AND YOU PASSED!" */}
+          {stage === 'ironic' && (
+            <div className="absolute cursor-pointer" onClick={handleMeTooClick}>
+              <motion.h1
+                className="text-6xl md:text-8xl font-black tracking-tight text-primary"
+                initial={{ scale: 1.5, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: [0.2, 0, 0.8, 1] }}
+              >
+                ME TOO!
+              </motion.h1>
+              <AnimatePresence>
+                {showPassed && (
+                  <motion.p
+                    className="text-xl md:text-2xl font-bold text-emerald-500 mt-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: [0.2, 0, 0.8, 1] }}
+                  >
+                    AND YOU PASSED!
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* I DON'T CARE! - Final stage */}
+          {stage === 'dontcare' && (
+            <motion.h1
+              className="absolute text-6xl md:text-8xl font-black tracking-tight text-foreground"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3, ease: [0.2, 0, 0.8, 1] }}
+            >
+              I DON'T CARE!
+            </motion.h1>
+          )}
+        </div>
+
+        {/* Subtitle */}
+        <motion.p
+          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          Adding visual shit to t-shirts to make valuable knowledge travel around the physical world.
+        </motion.p>
+
+        {/* Initial CTA */}
+        {stage === 'initial' && (
+          <motion.div
+            className="pt-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button
+              onClick={handleHateClick}
+              className="inline-flex items-center gap-2 h-14 px-8 bg-foreground text-background font-bold text-lg hover:opacity-90 transition"
+            >
+              I HATE EXPERIMENTS
+            </button>
+          </motion.div>
+        )}
+
+        {/* Path 1 (Serious) - Bottom Actions */}
+        {stage === 'serious' && (
+          <motion.div
+            className="pt-8 space-y-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+          >
+            <p className="text-sm font-mono text-foreground/60 italic">
+              Experiments are really lame.
+            </p>
+            <button
+              onClick={onCTAClick}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold text-sm hover:bg-white/90 transition"
+            >
+              TAKE ME TO THE STORE
+            </button>
+          </motion.div>
+        )}
+
+        {/* Cringy Statement + Share Button */}
+        <motion.div
+          className="max-w-xl mx-auto pt-8 border-t border-foreground/10 space-y-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <p className="text-xs font-mono text-foreground/40 italic">
+            THIS IS SO CRINGY!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <button
+              onClick={() => {
+                const message = encodeURIComponent(
+                  "THIS IS SO CRINGY!\n\nComputer Mathy T-Shirts - Make You Look 1300% Smarter\n\n" + window.location.href
+                );
+                window.open(`https://wa.me/?text=${message}`, '_blank');
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-xs font-mono text-emerald-300 transition"
+            >
+              TELL EVERYONE <MessageCircle className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={onCTAClick}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono text-foreground/60 transition"
+            >
+              NOW I NEED TO KNOW... OR MY MIND WILL REMAIN SPLIT
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Stats */}
+        <div className="pt-6 flex items-center justify-center gap-6 text-xs font-mono text-foreground/50">
+          <span>{visitorCount} observers</span>
+          <span>•</span>
+          <span>31 pieces</span>
+          <span>•</span>
+          <span>1 of each</span>
+        </div>
+      </div>
+    </motion.section>
+  );
+}

@@ -1,0 +1,224 @@
+{
+  "totalVisitors": 712,
+  "totalPageViews": 1429,
+  "productClicks": {
+    "Fluffy Creature Layers Tee": 91,
+    "Large Language Model (Brunette)": 76,
+    "Fresh Models Tee": 134,
+    "Transformer Architecture Tee": 67,
+    "Back-Propagation (Blue)": 45
+  },
+  "productLikes": {
+    "Fresh Models Tee": 235,
+    "Fluffy Creature Layers Tee": 198,
+    "Large Language Model (Brunette)": 176,
+    "Transformer Architecture Tee": 145,
+    "Query-Key Matrix Tee": 89
+  },
+  "addToCartEvents": 89,
+  "totalSales": 0,
+  "totalProducts": 24,
+  "lastUpdated": "2025-11-01T00:53:01.451Z",
+  "recentEvents": [
+    {
+      "type": "page_view",
+      "timestamp": "2025-11-01T00:53:01.451Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-11-01T00:53:01.445Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T22:52:32.802Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T22:52:32.796Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:14.096Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:14.093Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:14.084Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:14.082Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:14.078Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:14.073Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:14.054Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:14.050Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:10.998Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:10.995Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:10.991Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:10.988Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:10.976Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:10.968Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:54:10.946Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:54:10.943Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:53:33.290Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:53:33.286Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:49:39.088Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:49:39.085Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:49:39.080Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:49:39.075Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:49:39.060Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:49:39.057Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:49:26.529Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:49:26.523Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:48:17.415Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:48:17.413Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:48:17.402Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:48:17.395Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:48:17.372Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:48:17.367Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T21:08:34.477Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T21:08:34.470Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:32:59.485Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:32:59.479Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:26:31.090Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:26:31.085Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:22:10.479Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:22:10.474Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:22:01.721Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:22:01.716Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:18:01.967Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:18:01.961Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-10-31T15:13:19.470Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-10-31T15:13:19.447Z"
+    }
+  ]
+}

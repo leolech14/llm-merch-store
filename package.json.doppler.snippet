@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "next dev",
+    "dev:doppler": "doppler run -- next dev",
+    "build": "next build",
+    "build:doppler": "doppler run -- next build",
+    "start": "next start",
+    "deploy:staging": "doppler run --config staging -- vercel",
+    "deploy:prod": "doppler run --config prod -- vercel --prod",
+    "secrets:list": "doppler secrets",
+    "secrets:download": "doppler secrets download --no-file --format env"
+  }
+}

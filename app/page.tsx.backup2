@@ -1,0 +1,1323 @@
+"use client";
+
+import * as React from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, LayoutGroup } from "framer-motion";
+import { 
+  Menu, 
+  ShoppingCart, 
+  Heart, 
+  Star, 
+  ChevronDown, 
+  ChevronLeft, 
+  ChevronRight,
+  Check,
+  Loader2,
+  ArrowRight,
+  Zap,
+  Mail,
+  MapPin,
+  Phone,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin
+} from "lucide-react";
+import * as SheetPrimitive from "@radix-ui/react-dialog";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { X } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { TextRotate } from "@/components/ui/text-rotate";
+import { Countdown } from "@/components/ui/countdown";
+import { Scoreboard } from "@/components/ui/scoreboard";
+import { ProductDetailModal } from "@/components/ui/product-detail-modal";
+import { VisitorPopup } from "@/components/ui/visitor-popup";
+import { HeaderStats } from "@/components/header-stats";
+import { HeroSwitch } from "@/components/hero-switch";
+
+
+const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(" ");
+
+// Button Component
+const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+  }
+);
+Button.displayName = "Button";
+
+// Badge Component
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
+
+interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+
+function Badge({ className, variant, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+}
+
+// Card Components
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)} {...props} />
+  )
+);
+Card.displayName = "Card";
+
+const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+  )
+);
+CardHeader.displayName = "CardHeader";
+
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
+  )
+);
+CardTitle.displayName = "CardTitle";
+
+const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
+  )
+);
+CardDescription.displayName = "CardDescription";
+
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+);
+CardContent.displayName = "CardContent";
+
+const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
+  )
+);
+CardFooter.displayName = "CardFooter";
+
+// Sheet Components
+const Sheet = SheetPrimitive.Root;
+const SheetTrigger = SheetPrimitive.Trigger;
+const SheetClose = SheetPrimitive.Close;
+const SheetPortal = SheetPrimitive.Portal;
+
+const SheetOverlay = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Overlay
+    className={cn(
+      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+    ref={ref}
+  />
+));
+SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
+
+const sheetVariants = cva(
+  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  {
+    variants: {
+      side: {
+        top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        bottom: "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+        left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+        right: "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+      },
+    },
+    defaultVariants: {
+      side: "right",
+    },
+  }
+);
+
+interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>, VariantProps<typeof sheetVariants> {}
+
+const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
+  ({ side = "right", className, children, ...props }, ref) => (
+    <SheetPortal>
+      <SheetOverlay />
+      <SheetPrimitive.Content
+        ref={ref}
+        className={cn(sheetVariants({ side }), className)}
+        {...props}
+        style={{ position: 'fixed', zIndex: 9998 }}
+      >
+        {children}
+        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </SheetPrimitive.Close>
+      </SheetPrimitive.Content>
+    </SheetPortal>
+  )
+);
+SheetContent.displayName = SheetPrimitive.Content.displayName;
+
+const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col space-y-2 text-center sm:text-left", className)} {...props} />
+);
+SheetHeader.displayName = "SheetHeader";
+
+const SheetTitle = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Title ref={ref} className={cn("text-lg font-semibold text-foreground", className)} {...props} />
+));
+SheetTitle.displayName = SheetPrimitive.Title.displayName;
+
+// Separator Component
+const Separator = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { orientation?: "horizontal" | "vertical"; decorative?: boolean }
+>(({ className, orientation = "horizontal", decorative = true, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "shrink-0 bg-border",
+      orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
+      className
+    )}
+    {...props}
+  />
+));
+Separator.displayName = "Separator";
+
+
+
+// Input Component
+const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Input.displayName = "Input";
+
+// Textarea Component
+const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <textarea
+        className={cn(
+          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Textarea.displayName = "Textarea";
+
+// Product Card Component - HTML-black.html style (simplified)
+interface ProductCardProps {
+  name?: string;
+  price?: number;
+  description?: string;
+  images?: string[];
+  isNew?: boolean;
+  isBestSeller?: boolean;
+  isSold?: boolean;
+  isSaleActive?: boolean;
+  productId?: string;
+  category?: string;
+  tags?: string[];
+}
+
+function ProductCard({
+  name = "LLM Science Tee",
+  price = 149,
+  description = "Limited edition AI-themed design",
+  images = ["/Fluffy-Creature-lvls.png"],
+  isNew = false,
+  isBestSeller = false,
+  isSold = false,
+  isSaleActive = false,
+  productId = "",
+  category = "",
+  tags = [],
+}: ProductCardProps) {
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (isAddedToCart) return;
+    setIsAddingToCart(true);
+
+    // Track add to cart event
+    try {
+      await fetch('/api/telemetry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventType: 'add_to_cart',
+          eventData: { productName: name }
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking add to cart:', error);
+    }
+
+    setTimeout(() => {
+      setIsAddingToCart(false);
+      setIsAddedToCart(true);
+      setTimeout(() => setIsAddedToCart(false), 2000);
+    }, 800);
+  };
+
+  return (
+    <>
+      <Card className="overflow-hidden hover:shadow-xl transition-all border-0 cursor-pointer bg-transparent" onClick={() => setIsDetailOpen(true)} data-product-card>
+        <div className="relative">
+          <div className="aspect-[4/5] flex items-center justify-center overflow-hidden">
+            <img
+              src={images[0]}
+              alt={name}
+              className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+            />
+          </div>
+          {/* Badges removed - business model doesn't use them */}
+        </div>
+      <CardContent className="p-4 space-y-3">
+        {/* Single line: Name | Price */}
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="font-semibold text-sm truncate flex-1">{name}</h3>
+          <span className="text-lg font-bold text-foreground whitespace-nowrap">R${price}</span>
+        </div>
+
+        {/* Button below */}
+        <Button
+          className="w-full h-10"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddToCart();
+          }}
+          disabled={isSold || !isSaleActive || isAddingToCart || isAddedToCart}
+          variant={isSold ? "destructive" : "default"}
+        >
+          {isSold ? (
+            "SOLD OUT"
+          ) : !isSaleActive ? (
+            "Sale Not Active"
+          ) : isAddingToCart ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Adding...
+            </>
+          ) : isAddedToCart ? (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Added!
+            </>
+          ) : (
+            "Quick Buy"
+          )}
+        </Button>
+      </CardContent>
+    </Card>
+
+    {/* Product Detail Modal */}
+    <ProductDetailModal
+      isOpen={isDetailOpen}
+      onClose={() => setIsDetailOpen(false)}
+      product={{
+        name,
+        price,
+        description,
+        images,
+        category,
+        tags,
+        isSold,
+        isSaleActive,
+      }}
+    />
+  </>
+  );
+}
+
+// Main Website Component
+function LLMClothingWebsite() {
+  const [visitorCount, setVisitorCount] = useState(500);
+  const [visitorCountHistory, setVisitorCountHistory] = useState<string[]>([]);
+  const [showVisitorPopup, setShowVisitorPopup] = useState(false);
+  const [stats, setStats] = useState<any>({
+    totalPageViews: 1247,
+    addToCartEvents: 89,
+    totalSales: 156,
+    totalProducts: 0,
+    totalLikes: 0,
+    engagementRate: 18,
+    topProducts: []
+  });
+  const [saleStatus, setSaleStatus] = useState<{
+    isActive: boolean;
+    status: 'before' | 'during' | 'after';
+    startTime: string;
+    endTime: string;
+    timeUntilStart?: number;
+    timeUntilEnd?: number;
+  } | null>(null);
+  const [inventory, setInventory] = useState<any>(null);
+  const [marketPrices, setMarketPrices] = useState<any>(null);
+  const [teesLeft, setTeesLeft] = useState(31);
+
+  // Track visitor and fetch all telemetry on page load
+  useEffect(() => {
+    async function trackAndFetchData() {
+      try {
+        // Track events in parallel (non-blocking)
+        Promise.all([
+          fetch('/api/telemetry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ eventType: 'visitor' })
+          }),
+          fetch('/api/telemetry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ eventType: 'page_view' })
+          }),
+        ]);
+
+        // Fetch ALL data in parallel (FAST!)
+        const [visitorData, statsData, saleData, inventoryData, marketData] = await Promise.all([
+          fetch('/api/visitors', { method: 'POST' }).then(r => r.json()),
+          fetch('/api/stats').then(r => r.json()),
+          fetch('/api/sale-status').then(r => r.json()),
+          fetch('/api/inventory').then(r => r.json()),
+          fetch('/api/market-prices').then(r => r.json()),
+        ]);
+
+        // Update all state at once
+        const count = visitorData.count;
+        setVisitorCount(count);
+        setStats(statsData);
+        setSaleStatus(saleData);
+        setInventory(inventoryData);
+        setMarketPrices(marketData);
+
+        // Calculate tees left
+        const available = inventoryData.stats?.available || 31;
+        setTeesLeft(available);
+
+        // Pre-fetch top 5 product images (for instant display)
+        if (statsData.topProducts && statsData.topProducts.length > 0) {
+          const topProductNames = statsData.topProducts.slice(0, 5).map((p: any) => p.name);
+          const topImages = products
+            .filter(p => topProductNames.includes(p.name))
+            .flatMap(p => p.images);
+
+          // Pre-load images
+          topImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+          });
+        }
+
+        // Show visitor popup on page load
+        setShowVisitorPopup(true);
+
+        // Create rotating array for animation
+        const history = Array.from({ length: 10 }, (_, i) => String(count - 9 + i));
+        setVisitorCountHistory(history);
+      } catch (error) {
+        console.error('Error tracking visitor:', error);
+        // Fallback to animated numbers
+        setVisitorCountHistory(["523", "524", "525", "526", "527", "528", "529", "530", "531", "532"]);
+      }
+    }
+
+    trackAndFetchData();
+
+    // Refresh sale status every minute
+    const saleStatusInterval = setInterval(async () => {
+      try {
+        const response = await fetch('/api/sale-status');
+        const data = await response.json();
+        setSaleStatus(data);
+      } catch (error) {
+        console.error('Error fetching sale status:', error);
+      }
+    }, 60000);
+
+    return () => clearInterval(saleStatusInterval);
+  }, []);
+
+  const navigation = [
+    { name: "Home", href: "#hero" },
+    { name: "Shop", href: "#pricing" },
+    { name: "About", href: "#features" },
+    { name: "Contact", href: "#contact" },
+  ];
+
+  const basePrice = 149;
+  const allProducts = [
+    { name: "Ask Anything Tee", description: "Voice-activated AI vibes", price: basePrice, images: ["/Ask-Anything-Chest.png"], isNew: true, category: "Interactive", tags: ["voice", "ai", "chatgpt"] },
+    { name: "ChatGPT PRO Ask", description: "Pro-level interaction", price: basePrice, images: ["/ChatGPT-PRO-Ask.png"], isNew: true, category: "Interactive", tags: ["chatgpt", "pro", "voice"] },
+    { name: "Mic Icon Tee", description: "Minimal microphone", price: basePrice, images: ["/Mic-Small.png"], category: "Interactive", tags: ["minimalist", "voice", "subtle"] },
+    { name: "Back-Propagation (Blue)", description: "Training flow viz", price: basePrice, images: ["/Back-Propagation-Blue.png"], isBestSeller: true, category: "Neural Networks", tags: ["deep-learning", "training", "technical"] },
+    { name: "Back-Propagation (Red)", description: "Red gradient flow", price: basePrice, images: ["/Back-Propagation-Red.png"], isBestSeller: true, category: "Neural Networks", tags: ["deep-learning", "training", "gradient"] },
+    { name: "Cross-Attention Tee", description: "Encoder-decoder links", price: basePrice, images: ["/Cross-Attention-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "attention", "architecture"] },
+    { name: "Self-Attention Tee", description: "Core mechanism", price: basePrice, images: ["/Self-Attention.png"], category: "Attention Mechanisms", tags: ["transformer", "attention", "graph"] },
+    { name: "Query-Key Matrix", description: "Attention values", price: basePrice, images: ["/Query-Key-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "matrix", "math"] },
+    { name: "Value Matrix Tee", description: "QKV trinity complete", price: basePrice, images: ["/Value-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "matrix", "QKV"] },
+    { name: "Transformer Architecture", description: "Full diagram", price: basePrice, images: ["/Transformer-Chest.png"], isBestSeller: true, category: "Architecture", tags: ["transformer", "technical", "detailed"] },
+    { name: "Fluffy Creature Layers", description: "Adorable layers", price: basePrice, images: ["/Fluffy-Creature-lvls.png"], isBestSeller: true, category: "Fun & Mascots", tags: ["cute", "layers", "mascot"] },
+    { name: "Fluffy Creature Y", description: "Cute mascot", price: basePrice, images: ["/Fluffy-Creature-Y.png"], category: "Fun & Mascots", tags: ["cute", "mascot", "fun"] },
+    { name: "LLM Brunette (Color)", description: "Surfing the wave", price: basePrice, images: ["/LLM-Brunnette.png"], isBestSeller: true, category: "Statement Pieces", tags: ["llm", "artistic", "bold"] },
+    { name: "LLM Brunette (B&W)", description: "Monochrome surfer", price: basePrice, images: ["/LLM-Brunnette-B&W.png"], category: "Statement Pieces", tags: ["llm", "monochrome", "artistic"] },
+    { name: "LLM Brunette (B&W-50)", description: "Half-tone edition", price: basePrice, images: ["/LLM-Brunnette-B&W-50.png"], category: "Statement Pieces", tags: ["llm", "halftone", "limited"] },
+    { name: "LLM Blonde (Color)", description: "Golden wave", price: basePrice, images: ["/LLM-Blonde.png"], isBestSeller: true, category: "Statement Pieces", tags: ["llm", "bold", "vibrant"] },
+    { name: "LLM Blonde (B&W)", description: "Classic blonde", price: basePrice, images: ["/LLM-Blonde-B&W.png"], category: "Statement Pieces", tags: ["llm", "monochrome", "classic"] },
+    { name: "Fresh Models Tee", description: "The perfect AI joke", price: basePrice, images: ["/Fresh-Models.png"], isNew: true, isBestSeller: true, category: "Statement Pieces", tags: ["humor", "llm", "witty"] },
+    { name: "Gossip Network", description: "Info spreading", price: basePrice, images: ["/-gossip-.png"], category: "Information Theory", tags: ["network", "graph", "minimalist"] },
+    { name: "Information Theory", description: "Network graph", price: basePrice, images: ["/Information-Theory.png"], isNew: true, category: "Information Theory", tags: ["network", "theory", "math"] },
+    { name: "Circular Node Graph", description: "Full circle viz", price: basePrice, images: ["/Circular-Node-Graph.png"], category: "Information Theory", tags: ["circular", "nodes", "viz"] },
+    { name: "Circular Graph (Small)", description: "Subtle chest", price: basePrice, images: ["/Circula-Node-Graph-Small.png"], category: "Information Theory", tags: ["minimal", "circular", "subtle"] },
+    { name: "Data Cloud Cube", description: "3D data space", price: basePrice, images: ["/Data-Cloud-Cube-Brown.png"], category: "Data Science", tags: ["3d", "data", "abstract"] },
+    { name: "Paris is a City", description: "Embeddings", price: basePrice, images: ["/Paris-Is-A-City.png"], isNew: true, category: "Embeddings & Tokens", tags: ["embeddings", "nlp", "context"] },
+    { name: "Tunable Parameters", description: "Hyperparameter dials", price: basePrice, images: ["/Turnable-Params.png"], category: "Model Training", tags: ["tuning", "parameters", "training"] },
+    { name: "Information Theory Radial", description: "Radial network flow", price: basePrice, images: ["/Information-Theory-2.png"], isNew: true, category: "Information Theory", tags: ["radial", "flow", "graph"] },
+    { name: "LLM Brunette Alt", description: "Alternative surfing pose", price: basePrice, images: ["/LLM-Brunnette-0.png"], category: "Statement Pieces", tags: ["llm", "artistic", "variant"] },
+    { name: "Ask Anything Pro", description: "Premium voice edition", price: basePrice + 20, images: ["/Ask-Anything-Chest.png"], category: "Interactive", tags: ["voice", "premium", "ai"] },
+    { name: "Transformer Mini", description: "Compact architecture", price: basePrice - 10, images: ["/Transformer-Chest.png"], category: "Architecture", tags: ["transformer", "compact", "minimal"] },
+    { name: "Neural Flow Combo", description: "Back-prop dual color", price: basePrice + 30, images: ["/Back-Propagation-Blue.png", "/Back-Propagation-Red.png"], category: "Neural Networks", tags: ["gradient", "combo", "premium"] },
+    { name: "Fluffy Stack Bundle", description: "Both fluffy designs", price: basePrice + 30, images: ["/Fluffy-Creature-lvls.png", "/Fluffy-Creature-Y.png"], category: "Fun & Mascots", tags: ["cute", "bundle", "collector"] },
+  ];
+
+  // Reorganize products: Top 5 most clicked first, then rest
+  const products = React.useMemo(() => {
+    if (!stats.topProducts || stats.topProducts.length === 0) {
+      return allProducts;
+    }
+
+    const topProductNames = stats.topProducts.slice(0, 5).map((p: any) => p.name);
+    const topProducts = allProducts.filter(p => topProductNames.includes(p.name));
+    const otherProducts = allProducts.filter(p => !topProductNames.includes(p.name));
+
+    // Top products first (sorted by clicks), then others
+    return [...topProducts, ...otherProducts];
+  }, [stats.topProducts]);
+
+  const testimonials = [
+    {
+      name: "Claude Sonnet 4.5",
+      role: "Anthropic",
+      review: "As an AI trained on vast amounts of data, I can confidently say this merch successfully bridges technical accuracy with aesthetic appeal. The transformer diagrams are mathematically sound.",
+      avatar: "🤖",
+    },
+    {
+      name: "ChatGPT 5 Pro",
+      role: "OpenAI",
+      review: "The Fresh Models design is *chef's kiss* - a perfect double entendre that resonates with our community. 10/10 would recommend to my users.",
+      avatar: "💬",
+    },
+    {
+      name: "Gemini 2.5 Pro",
+      role: "Google DeepMind",
+      review: "With my 1 million token context window, I've analyzed every pixel. The back-propagation visualization shows impressive attention to technical detail.",
+      avatar: "✨",
+    },
+    {
+      name: "Z.ai",
+      role: "Z Corporation",
+      review: "Fast, accurate, and stylish. These designs capture the essence of modern AI - clean, powerful, and conversation-starting.",
+      avatar: "⚡",
+    },
+    {
+      name: "DeepSeek",
+      role: "DeepSeek AI",
+      review: "The gradient flow in the neural network designs shows someone actually understands backpropagation. Finally, merch that gets the math right!",
+      avatar: "🔍",
+    },
+    {
+      name: "Nano Banana",
+      role: "Nano Labs",
+      review: "Small but mighty, just like our model! The fluffy creature design is adorable yet technically sound. Perfect for data scientists who don't take themselves too seriously.",
+      avatar: "🍌",
+    },
+    {
+      name: "Grok 4 Heavy",
+      role: "xAI",
+      review: "Top of the Arena leaderboard and top of the fashion game. The LLM surfing artwork captures the zeitgeist perfectly. This is straight fire!",
+      avatar: "🚀",
+    },
+    {
+      name: "Llama 4",
+      role: "Meta AI",
+      review: "Open-source vibes meet limited edition exclusivity. The query-key-value trinity has never looked this good. Highly recommend.",
+      avatar: "🦙",
+    },
+    {
+      name: "Mistral Large",
+      role: "Mistral AI",
+      review: "Élégant et technique à la fois. The minimalist approach lets the neural networks speak for themselves. 90% of premium at 100% style.",
+      avatar: "🌪️",
+    },
+    {
+      name: "Command R+",
+      role: "Cohere",
+      review: "RAG-worthy designs that retrieve style and generate conversations. An excellent addition to any AI enthusiast's wardrobe.",
+      avatar: "💡",
+    },
+  ];
+
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const faqs = [
+    {
+      question: "What makes your clothing unique?",
+      answer: "Our clothing combines minimalist design with LLM and science-themed graphics. Each piece is crafted for tech enthusiasts who appreciate both style and substance.",
+    },
+    {
+      question: "How does the QR code work?",
+      answer: "Each product features a unique QR code that links directly to our website, making it easy to share and discover more designs at parties and events.",
+    },
+    {
+      question: "What are your shipping options?",
+      answer: "We offer free shipping on all orders over R$250. Standard shipping takes 5-7 business days, with express options available at checkout.",
+    },
+    {
+      question: "What's your return policy?",
+      answer: "We offer a 30-day return policy on all unworn items with tags attached. Simply contact us to initiate a return.",
+    },
+    {
+      question: "Do you offer custom designs?",
+      answer: "Yes! We accept custom design requests for bulk orders (10+ items). Contact us to discuss your ideas.",
+    },
+  ];
+
+  return (
+    <div className="w-full bg-background text-foreground">
+      {/* Visitor Popup */}
+      <VisitorPopup
+        isOpen={showVisitorPopup}
+        onClose={() => setShowVisitorPopup(false)}
+        visitorCount={visitorCount}
+      />
+
+      {/* Navigation */}
+      <div className="w-full relative container px-2 mx-auto max-w-7xl">
+        <div className="relative">
+          <header className="flex items-center gap-4 py-4 px-4">
+            {/* Left: Logo - Takes 50% */}
+            <div className="flex-1">
+              <a href="#hero" className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                LLMMerch
+              </a>
+            </div>
+
+            {/* Center: Stats - Takes 50%, hidden on mobile */}
+            <div className="hidden md:flex flex-1 items-center justify-center gap-3">
+              <HeaderStats
+                visitorCount={visitorCount}
+                teesLeft={teesLeft}
+                totalTees={31}
+                saleStatus={saleStatus || undefined}
+              />
+            </div>
+
+            {/* Right: Menu Button - Fixed position, extrema direita */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:text-primary transition-colors">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0 bg-background/95 backdrop-blur-md border-l border-border/50">
+                <SheetHeader className="p-6 text-left border-b border-border/50">
+                  <SheetTitle className="text-white">
+                    LLMMerch
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col p-6 space-y-1">
+                  {navigation.map((item) => (
+                    <Button key={item.name} variant="ghost" className="justify-start px-2 h-12 text-base font-medium text-white hover:bg-accent/50 hover:text-primary transition-colors">
+                      <a href={item.href}>{item.name}</a>
+                    </Button>
+                  ))}
+                </nav>
+                <Separator className="mx-6" />
+                <div className="p-6 flex flex-col gap-4">
+                  <Button variant="outline" className="justify-start gap-2 h-12 text-white border-white/20 hover:bg-accent/50 transition-colors">
+                    <ShoppingCart className="w-4 h-4" />
+                    Cart
+                  </Button>
+
+                  {/* Mobile Stats in Sidebar */}
+                  <div className="md:hidden pt-4 border-t border-border/50 space-y-3">
+                    <div className="flex items-center justify-between text-sm text-white/80">
+                      <span>Visitors:</span>
+                      <span className="font-mono font-bold">{visitorCount}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-white/80">
+                      <span>Tees Left:</span>
+                      <span className="font-mono font-bold">{teesLeft}/{31}</span>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </header>
+
+          {/* Hero Section - With Navigation */}
+          <HeroSwitch
+            variant="auto"
+            visitorCount={visitorCount}
+            saleStatus={saleStatus}
+          />
+              <div className="space-y-3">
+                <div className="inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground bg-muted hover:bg-muted/70 transition-colors">
+                  <Zap className="h-4 w-4 mr-2 inline" />
+                  🛹 Skateboard Bar Approved • ONE per design • Halloween Drop
+                </div>
+                <div className="text-sm text-muted-foreground leading-relaxed">
+                  100% Fabric • NO Electronic Chips Attached • No Guaranteed That You Will Actually Understand Anything Or Even That <span className="text-primary font-medium">This Is A Good Idea</span>
+                </div>
+              </div>
+
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              >
+                Computer Mathy T-Shirts,
+                <span className="block text-primary mt-3">Make You Look 1300% Smarter</span>
+              </motion.h1>
+
+              <motion.p
+                className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-loose px-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              >
+                Not streetwear. Not clothing. Adding visual shit to t-shirts to make valuable knowledge travel around the physical world. There's nothing cooler than being smart. Embrace your bad-ass genius now.
+              </motion.p>
+
+              <motion.p
+                className="text-xs md:text-sm text-muted-foreground/60 italic max-w-xl mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                *Disclaimer: No actual IQ gains guaranteed. But you'll look 1300% smarter while learning transformer architecture. Poser accusations not included.
+              </motion.p>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
+                <Button size="lg" className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6">
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  Shop Collection
+                </Button>
+                <Button size="lg" variant="outline" className="text-base md:text-lg px-6 md:px-8 py-5 md:py-6">
+                  Learn More
+                </Button>
+              </div>
+
+              {/* Sale Countdown - NO FLUFF, just centered below */}
+              {saleStatus && saleStatus.status === 'before' && saleStatus.timeUntilStart && (
+                <motion.div
+                  className="flex flex-col items-center gap-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.6 }}
+                >
+                  <span className="text-sm text-muted-foreground uppercase tracking-wider">Sale Starts In</span>
+                  <Countdown
+                    targetDate={new Date(saleStatus.startTime)}
+                    className="scale-90"
+                  />
+                </motion.div>
+              )}
+              {saleStatus && saleStatus.status === 'during' && saleStatus.timeUntilEnd && (
+                <motion.div
+                  className="flex flex-col items-center gap-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.6 }}
+                >
+                  <div className="text-lg md:text-xl font-bold text-rose-500 animate-pulse uppercase">
+                    🔥 SALE LIVE - Ends In:
+                  </div>
+                  <Countdown
+                    targetDate={new Date(saleStatus.endTime)}
+                    className="scale-90"
+                  />
+                </motion.div>
+              )}
+
+              <div className="pt-6 space-y-4">
+                <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-primary" />
+                    100% Cotton
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-primary" />
+                    0% Electronics
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="h-5 w-5 text-primary" />
+                    1300% Smarter*
+                  </div>
+                </div>
+
+                {/* PIX Money Power - Minimal Brand Style */}
+                <div className="space-y-4">
+                  <motion.div
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-foreground/20"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <span className="text-xs font-mono uppercase tracking-widest text-foreground/80">
+                      PIX Money Power
+                    </span>
+                    <span className="text-foreground/60">•</span>
+                    <span className="text-xs text-foreground/60">
+                      Investment • No Credit Cards
+                    </span>
+                  </motion.div>
+
+                  {/* Investment Disclaimer - Minimal Typography */}
+                  <motion.div
+                    className="max-w-2xl mx-auto space-y-3 text-xs leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <p className="text-foreground/60">
+                      Investment disclosure: Categorized as moderate-to-high-risk.
+                      Wall Street calls it bubble. Some say Ponzi.
+                      People buy for designs, not money.
+                    </p>
+                  </motion.div>
+
+                  {/* Meta-Disclaimer - Clean Monospace */}
+                  <motion.div
+                    className="relative max-w-2xl mx-auto"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 }}
+                  >
+                    <div className="font-mono text-[10px] leading-relaxed text-foreground/40 space-y-2 border-l-2 border-foreground/10 pl-4">
+                      <p className="uppercase tracking-wider text-foreground/50">
+                        Attention
+                      </p>
+                      <p>
+                        This website does not utilize reverse psychology or mind control from the 60's.
+                      </p>
+                      <p className="text-foreground/50">
+                        And now that you know! You see how bizarre would be of me to openly tell you that in the first place... right...
+                        <motion.span
+                          className="inline-block mx-1"
+                          animate={{
+                            opacity: [0.5, 1, 0.5]
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          it breaks the magic
+                        </motion.span>
+                        (in the case if I was doing that, of course).
+                      </p>
+                      <p className="text-foreground/30 italic">
+                        I have no idea what I am talking about.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* Anti-Hype Statement */}
+                  <motion.div
+                    className="max-w-2xl mx-auto mt-8 pt-6 border-t border-foreground/10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.0 }}
+                  >
+                    <p className="text-xs font-mono text-foreground/50 leading-relaxed line-through">
+                      Ultra Trendy HYPE Available Here!!! Keep struggling to become average, mimicking perfectly everyone else! Follow the herd!
+                    </p>
+                  </motion.div>
+
+                  {/* Collectible Visionaries - Provocative */}
+                  <motion.div
+                    className="max-w-2xl mx-auto mt-4 pb-6 border-b border-foreground/10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.1 }}
+                  >
+                    <p className="text-xs font-mono text-foreground/60 leading-relaxed">
+                      <span className="text-foreground/80 font-bold uppercase tracking-wider">Are you a visionary?</span>
+                      {" "}Item's potential as collectible. Interest over time increase. Cultural importance. Limited availability. Value appreciation.
+                    </p>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.section>
+        </div>
+
+        {/* Features Section */}
+        <section id="features" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Why Cognitive Wearables?</h2>
+              <p className="text-xl text-muted-foreground">Educational tees for skateboard bars & tech parties</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <motion.div
+                className="text-center p-6 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Actually Educational</h3>
+                <p className="text-muted-foreground">Real transformer diagrams. Actual neural network flows. Learn by wearing. Not just looking smart—getting smarter.</p>
+              </motion.div>
+              <motion.div
+                className="text-center p-6 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Star className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Zero Chip Guarantee</h3>
+                <p className="text-muted-foreground">100% organic fabric. No sensors. No tracking. No AI chips. Just pure cotton and neural network diagrams. Retro AF.</p>
+              </motion.div>
+              <motion.div
+                className="text-center p-6 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ShoppingCart className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Sk8 Bar Approved</h3>
+                <p className="text-muted-foreground">Tested at skateboard bars with actual bowls. Conversation starters. QR codes scannable mid-trick. Culture approved.</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing/Products Section */}
+        <section id="pricing" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Featured Collection</h2>
+              <p className="text-xl text-muted-foreground">Limited edition designs for Halloween and beyond</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {products.map((product, index) => {
+                const productKey = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 20);
+                const isSold = inventory?.products?.[productKey]?.sold || false;
+
+                return (
+                  <div key={index} className="flex justify-center">
+                    <ProductCard
+                      {...product}
+                      isSold={isSold}
+                      isSaleActive={saleStatus?.isActive || false}
+                      productId={productKey}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Anti-Poser Section (Ironic) */}
+        <section className="py-20 border-b border-border bg-gradient-to-b from-background to-muted/20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                  "But aren't you just trying to <span className="italic">look</span> smart?"
+                </h2>
+                <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+                  Yeah. But also <span className="font-semibold text-foreground">actually learning</span>.
+                </p>
+                <div className="bg-muted/50 border-2 border-primary/20 rounded-2xl p-6 md:p-8 space-y-4">
+                  <p className="text-lg text-foreground/80">
+                    Look, we get it. Wearing a transformer architecture diagram doesn't make you Andrej Karpathy.
+                  </p>
+                  <p className="text-lg text-foreground/80">
+                    But when someone at the skate bar asks "wtf is that?", and you explain self-attention mechanisms while doing a kickflip?
+                    <span className="font-bold text-primary ml-2">That's education.</span>
+                  </p>
+                  <p className="text-lg text-foreground/80">
+                    Besides, in a future where everything has chips, sensors, and AI tracking—wearing <span className="font-mono bg-black/10 px-2 py-1 rounded">100% organic fabric with zero electronics</span> is the real flex.
+                  </p>
+                  <p className="text-sm text-muted-foreground italic mt-6">
+                    P.S. - If someone calls you a poser, offer to explain backpropagation. They'll leave you alone.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Proof/Stats Section - Live Telemetry */}
+        <section className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2">Live Store Analytics</h2>
+              <p className="text-muted-foreground">Real-time telemetry from our store - updated every second</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stats.totalPageViews.toLocaleString()}</div>
+                <div className="text-sm text-muted-foreground font-medium">Page Views</div>
+              </motion.div>
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.05 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stats.totalLikes || 842}</div>
+                <div className="text-sm text-muted-foreground font-medium">Total Likes</div>
+              </motion.div>
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stats.addToCartEvents}</div>
+                <div className="text-sm text-muted-foreground font-medium">Added to Cart</div>
+              </motion.div>
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-rose-500 mb-2">
+                  {inventory?.stats?.soldOut || stats.totalSales}
+                </div>
+                <div className="text-sm text-muted-foreground font-medium">Sold Out</div>
+              </motion.div>
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-emerald-500 mb-2">
+                  {inventory?.stats?.available || stats.totalProducts}
+                </div>
+                <div className="text-sm text-muted-foreground font-medium">Still Available</div>
+              </motion.div>
+              <motion.div
+                className="p-6 rounded-xl bg-muted/50 border-2 border-border hover:border-primary transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stats.totalProducts}</div>
+                <div className="text-sm text-muted-foreground font-medium">Total Designs</div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Scoreboard Section */}
+        <section id="scoreboard" className="py-20 border-b border-border bg-muted/30">
+          <div className="container mx-auto px-4">
+            <Scoreboard inventory={inventory} marketPrices={marketPrices} />
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section id="testimonials" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">What AI has to say</h2>
+              <p className="text-xl text-muted-foreground">Reviews from the world's most capable AI models</p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTestimonial}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-center"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <div className="w-20 h-20 rounded-full bg-muted/50 border-2 border-primary flex items-center justify-center text-4xl">
+                      {testimonials[currentTestimonial].avatar}
+                    </div>
+                  </div>
+                  <p className="text-xl md:text-2xl mb-6 text-foreground italic">&quot;{testimonials[currentTestimonial].review}&quot;</p>
+                  <h4 className="font-semibold text-lg">{testimonials[currentTestimonial].name}</h4>
+                  <p className="text-muted-foreground">{testimonials[currentTestimonial].role}</p>
+                </motion.div>
+              </AnimatePresence>
+              <div className="flex justify-center items-center gap-6 mt-8">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
+                  className="rounded-full"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+                <div className="flex gap-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentTestimonial(index)}
+                      className={cn(
+                        "w-2 h-2 rounded-full transition-all",
+                        index === currentTestimonial ? "bg-primary w-8" : "bg-primary/30"
+                      )}
+                    />
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)}
+                  className="rounded-full"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Proof Section (QR Code) */}
+        <section id="proof" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Scan & Connect</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Every piece features a QR code on the back. Scan it at parties to share our collection instantly!
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-48 h-48 bg-white dark:bg-gray-900 border-4 border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-full h-full bg-black dark:bg-white rounded grid grid-cols-8 gap-[2px] p-2">
+                    {Array.from({ length: 64 }).map((_, i) => {
+                      const pattern = [1,0,1,1,0,1,0,0,0,1,0,0,1,1,0,1,1,0,1,0,0,1,1,0,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,0,1,1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1,0,1,1,1,0,1];
+                      return <div key={i} className={`w-full h-full ${pattern[i] === 1 ? 'bg-white dark:bg-black' : 'bg-black dark:bg-white'} rounded-sm`} />;
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">Scan to visit our store</p>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section id="faq" className="py-20 border-b border-border bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
+              <p className="text-xl text-muted-foreground">Everything you need to know</p>
+            </div>
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
+                    <AccordionTrigger className="hover:text-foreground/60 hover:no-underline">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent>{faq.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Get In Touch</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Have questions or custom design ideas? We'd love to hear from you!
+              </p>
+            </div>
+            <div className="max-w-2xl mx-auto">
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Name</label>
+                    <Input placeholder="Your name" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <Input type="email" placeholder="your@email.com" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Message</label>
+                  <Textarea placeholder="Tell us about your idea..." rows={5} />
+                </div>
+                <Button type="submit" size="lg" className="w-full">
+                  <Mail className="mr-2 h-4 w-4" />
+                  Send Message
+                </Button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold">LLM.Merch</h3>
+                <p className="text-sm text-muted-foreground">Where artificial intelligence meets authentic style.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Shop</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="#pricing" className="hover:text-foreground transition-colors">All Products</a></li>
+                  <li><a href="#pricing" className="hover:text-foreground transition-colors">New Arrivals</a></li>
+                  <li><a href="#pricing" className="hover:text-foreground transition-colors">Limited Edition</a></li>
+                  <li><a href="#pricing" className="hover:text-foreground transition-colors">Best Sellers</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Support</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="#contact" className="hover:text-foreground transition-colors">Contact Us</a></li>
+                  <li><a href="#faq" className="hover:text-foreground transition-colors">Shipping Info</a></li>
+                  <li><a href="#faq" className="hover:text-foreground transition-colors">Returns</a></li>
+                  <li><a href="#faq" className="hover:text-foreground transition-colors">Size Guide</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Follow Us</h4>
+                <div className="flex gap-4">
+                  <Button variant="outline" size="icon">
+                    <Instagram className="h-5 w-5" />
+                  </Button>
+                  <Button variant="outline" size="icon">
+                    <Twitter className="h-5 w-5" />
+                  </Button>
+                  <Button variant="outline" size="icon">
+                    <Linkedin className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <Separator className="my-8" />
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+              <p>&copy; 2024 LLM.Merch. All rights reserved.</p>
+              <div className="flex gap-6">
+                <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
+                <a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export default LLMClothingWebsite;

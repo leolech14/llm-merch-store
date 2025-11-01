@@ -1,0 +1,280 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                       INTEGRATION ISSUES QUICK REF                         ║
+║                      LLM Merch Store - 2025-10-31                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌─ THE 4 CRITICAL BUGS (FIX TODAY) ────────────────────────────────────────┐
+
+1. PRODUCT KEYS MISMATCH
+   Problem:   Frontend generates "ask-anything-tee" but backend has "ask-anything-chest"
+   Result:    All inventory lookups fail → Products show "Available" when they're sold
+   Location:  app/api/inventory/route.ts lines 42-67
+   Fix Time:  30 minutes
+   Solution:  Change all backend keys to match: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+   Impact:    BLOCKS INVENTORY FEATURE
+
+
+2. STATS FROZEN AT INITIALIZATION
+   Problem:   Frontend shows totalProducts: 0 (hardcoded init)
+              API returns totalProducts: 26 (correct!)
+   Result:    Users see "0 Total Designs" forever
+   Location:  app/page.tsx lines 407-415, 458, 864-919
+   Fix Time:  5 minutes (just verify setStats is being called)
+   Solution:  Debug why API data not being assigned to state
+   Impact:    BROKEN ANALYTICS DISPLAY
+
+
+3. NO ERROR HANDLING
+   Problem:   Promise.all([...]).then(...) has no .catch()
+              If any API fails, silent failure = stale data shown
+   Result:    Users and devs can't see when things break
+   Location:  app/page.tsx lines 429-507
+   Fix Time:  15 minutes
+   Solution:  Wrap Promise.all in try-catch, validate each response
+   Impact:    MASKING ALL FAILURES
+
+
+4. PRODUCT CATALOG HARDCODED (2 PLACES!)
+   Problem:   Frontend: 30 products hardcoded (page.tsx:518-550)
+              Backend: 26 products hardcoded (inventory.ts:40-70)
+              Missing: 4 products not in backend
+   Result:    Adding product requires changes in 2 places + manual sync
+   Location:  app/page.tsx + app/api/inventory/route.ts
+   Fix Time:  30 min (band-aid) or 2 hours (proper)
+   Solution:  Create products.json as single source of truth
+   Impact:    MAINTAINABILITY NIGHTMARE
+
+
+┌─ WHAT TO DO RIGHT NOW ───────────────────────────────────────────────────┐
+
+Step 1: Fix Product Keys (30 min)
+   File: /Users/lech/PROJECTS_all/PROJECT_merch/llm-merch-store/app/api/inventory/route.ts
+   Find: Lines 42-67 (all product keys)
+   Do:   Change "ask-anything-chest" to "ask-anything-tee", etc.
+   Test: Load page → Check product.isSold actually reflects inventory
+
+
+Step 2: Debug Stats (5 min)
+   File: /Users/lech/PROJECTS_all/PROJECT_merch/llm-merch-store/app/page.tsx
+   Find: Line 458 (setStats call)
+   Do:   Add console.log('statsData:', statsData) before setStats
+   Test: Refresh page → Check console for totalProducts value
+   If:   Shows 0 → API not returning it (check /api/stats endpoint)
+   If:   Shows 26 → Bug is in state management
+
+
+Step 3: Add Error Handling (15 min)
+   File: /Users/lech/PROJECTS_all/PROJECT_merch/llm-merch-store/app/page.tsx
+   Find: Lines 446-453 (Promise.all)
+   Do:   Wrap in try-catch, check response.ok, validate data
+   Test: Kill backend → Refresh frontend → Should see error in console
+
+
+Step 4: Choose Product Catalog Fix
+   Band-aid (30 min):      Sync 30 products in both places, document duplication
+   Proper (2 hours):       Create products.json, add /api/catalog, update both
+   Decision:               Talk to team on preferred approach
+
+
+┌─ TESTING EACH FIX ───────────────────────────────────────────────────────┐
+
+AFTER FIX #1 (Product Keys):
+   □ Load http://localhost:3000
+   □ Click a product → Check Network tab for inventory lookup
+   □ Manually mark 1 product sold: curl -X POST http://localhost:3000/api/inventory
+   □ Refresh page → Product should show "SOLD OUT"
+   □ Check console → No warnings about missing keys
+
+
+AFTER FIX #2 (Stats):
+   □ Page loads → totalProducts shows 26 (not 0)
+   □ addToCartEvents shows real number (not 89 hardcoded)
+   □ totalLikes shows real number (not 0 hardcoded)
+   □ Console shows statsData with all fields
+
+
+AFTER FIX #3 (Error Handling):
+   □ Backend running → Page loads fine (no errors in console)
+   □ Kill backend → Refresh page → See clear error message
+   □ Restart backend → Page loads again (test recovery)
+   □ Check Network tab → Can see failed requests and responses
+
+
+AFTER FIX #4 (Product Catalog):
+   Band-aid: 30 products in both places with matching names & keys
+   Proper:   curl http://localhost:3000/api/catalog returns 30 products
+
+
+┌─ FILE REFERENCE ─────────────────────────────────────────────────────────┐
+
+ANALYSIS DOCUMENTS (READ THESE):
+  /ANALYSIS_SUMMARY.txt           ← Overview & key findings
+  /INTEGRATION_QUICK_FIX.md       ← Copy/paste code fixes
+  /INTEGRATION_CHECKLIST.md       ← Task tracking
+  /INTEGRATION_ANALYSIS.md        ← Deep technical breakdown
+
+SOURCE FILES WITH BUGS:
+  /app/page.tsx                   ← Product keys, stats, error handling
+  /app/api/inventory/route.ts     ← Product key definitions
+  /app/api/stats/route.ts         ← Stats aggregation
+  /components/ui/product-detail-modal.tsx ← Purchase flow
+
+
+┌─ PRODUCT KEYS MAPPING NEEDED ────────────────────────────────────────────┐
+
+Frontend generates keys like this:
+  name.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .substring(0, 20)
+
+Examples:
+  "Ask Anything Tee"              → "ask-anything-tee"
+  "ChatGPT PRO Ask"               → "chatgpt-pro-ask"
+  "Back-Propagation (Blue)"       → "back-propagation-blue"
+  "LLM Brunette (B&W)"            → "llm-brunette-bw"
+  "Fluffy Creature Layers"        → "fluffy-creature-layers"
+
+Backend CURRENTLY uses (WRONG):
+  "ask-anything-chest"
+  "chatgpt-pro"
+  "mic-small"
+  "info-theory-2"
+  ... etc
+
+FIX: Change all 26 backend keys to match frontend generation
+
+
+┌─ API RESPONSE VALIDATION CHECKLIST ──────────────────────────────────────┐
+
+Before assigning API response to state, check:
+
+Visitors API:
+  ✓ response.ok (HTTP 200)
+  ✓ data.count is number
+  ✓ data.count > 0
+
+Stats API:
+  ✓ response.ok
+  ✓ data.totalPageViews is number
+  ✓ data.addToCartEvents is number
+  ✓ data.totalProducts is number
+  ✓ data.topProducts is array
+  ✗ Reject if totalProducts is undefined/0 when inventory populated
+
+Sale Status API:
+  ✓ response.ok
+  ✓ data.isActive is boolean
+  ✓ data.status in ['before', 'during', 'after']
+  ✓ data.startTime is valid ISO date
+  ✓ data.endTime is valid ISO date
+
+Inventory API:
+  ✓ response.ok
+  ✓ data.products is object (not array!)
+  ✓ data.stats has totalProducts, available, soldOut
+
+Market Prices API:
+  ✓ response.ok
+  ✓ data.marketPrices is object (or check if nested)
+  ✓ data.topGainers is array
+
+
+┌─ DEBUG COMMANDS ─────────────────────────────────────────────────────────┐
+
+Check API endpoints:
+  curl http://localhost:3000/api/stats | jq .
+  curl http://localhost:3000/api/inventory | jq '.products | keys'
+  curl http://localhost:3000/api/sale-status | jq .
+  curl http://localhost:3000/api/market-prices | jq '.marketPrices | keys'
+
+Check if product key exists:
+  PRODUCT_KEY="ask-anything-tee"
+  curl http://localhost:3000/api/inventory | jq ".products[\"$PRODUCT_KEY\"]"
+  # Should show: { name: "Ask Anything Tee", stock: 1, sold: false, ... }
+  # If null: key doesn't exist!
+
+Mark product as sold (test):
+  curl -X POST http://localhost:3000/api/inventory \
+    -H "Content-Type: application/json" \
+    -d '{"productId":"ask-anything-tee","collectorNickname":"Test","price":149}'
+
+Check browser console:
+  F12 → Console tab → Look for errors/warnings
+  F12 → Network tab → Look for failed requests
+
+
+┌─ COMMON MISTAKES TO AVOID ───────────────────────────────────────────────┐
+
+❌ WRONG: Change just frontend keys to match backend
+   RIGHT: Change backend keys to match frontend (it generates them!)
+
+❌ WRONG: Initialize stats with non-zero values as defaults
+   RIGHT: Initialize with 0, let API populate
+
+❌ WRONG: Silently use fallback if API returns error
+   RIGHT: Show error to user, don't hide failures
+
+❌ WRONG: Match product names "exactly" between frontend/backend
+   RIGHT: Use KEY GENERATION FORMULA in both places
+
+❌ WRONG: Call POST /api/inventory without full response handling
+   RIGHT: Check response.ok, parse JSON, validate fields
+
+
+┌─ QUICK CHECKLIST (BEFORE CALLING DONE) ──────────────────────────────────┐
+
+Critical Issues:
+  □ Product key mismatch fixed (30 products, correct keys)
+  □ Stats updating correctly (totalProducts not frozen)
+  □ Error handling in place (Promise.all has try-catch)
+  □ Product catalog decision made (band-aid or proper fix)
+
+Testing:
+  □ Load page → No console errors
+  □ Click product → Shows correct inventory status
+  □ Stop backend → See error message (not silent fail)
+  □ Stats display matches API response (not hardcoded values)
+
+Documentation:
+  □ Team notified of changes
+  □ Product catalog strategy documented
+  □ Error handling strategy documented
+  □ Next steps identified (P1 issues)
+
+
+┌─ ESTIMATED IMPACT ───────────────────────────────────────────────────────┐
+
+BEFORE FIXES:
+  Inventory accuracy:    0% (all products show wrong status)
+  Stats accuracy:        0% (frozen at init values)
+  Error visibility:      0% (silent failures)
+  Maintainability:       -50% (product duplication)
+
+AFTER CRITICAL FIXES (today):
+  Inventory accuracy:    100% (key matching fixed)
+  Stats accuracy:        100% (API data flows through)
+  Error visibility:      70% (errors caught and logged)
+  Maintainability:       0% (still duplicated, but noted)
+
+AFTER ALL FIXES (this week):
+  Inventory accuracy:    100%
+  Stats accuracy:        100%
+  Error visibility:      100%
+  Maintainability:       95% (single source of truth)
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         READY? START HERE:                               ║
+║           1. Open INTEGRATION_QUICK_FIX.md                               ║
+║           2. Follow steps for Issue #1 (30 min)                          ║
+║           3. Test with checklist above                                   ║
+║           4. Move to Issue #2 (5 min)                                    ║
+║           5. Continue through Issue #3 & #4                              ║
+║                                                                          ║
+║                    Total time: ~2 hours for full fix                     ║
+║                    Total time: ~50 min for critical issues only          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+Generated: 2025-10-31
+For more details: See INTEGRATION_ANALYSIS.md
+Last updated: 2025-10-31

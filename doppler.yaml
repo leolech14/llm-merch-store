@@ -1,0 +1,11 @@
+# Doppler Config for LLMMerch
+# Secret management for all environments
+
+setup:
+  project: llmmerch
+  config: dev
+
+# Environments
+# - dev (local development)
+# - staging (preview deployments)
+# - prod (production - llmmerch.space)
