@@ -988,13 +988,13 @@ function LLMClothingWebsite() {
               <div className="grid md:grid-cols-2 gap-12">
                 <div className="border-4 border-white p-8 bg-white/5">
                   <img
-                    src="/images/llm-05-brunette-bw.png"
-                    alt="LLM Brunette B&W"
+                    src="/images/llm-03-brunette-color.jpg"
+                    alt="LLM Brunette Color"
                     className="w-full h-auto mb-6"
                   />
                   <div className="text-center space-y-2">
                     <h3 className="text-3xl font-black text-white">BRUNETTE</h3>
-                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Black & White Edition</p>
+                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Full Color Edition</p>
                     <div className="pt-4">
                       <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
                         SIGNATURE PIECE
@@ -1004,13 +1004,13 @@ function LLMClothingWebsite() {
                 </div>
                 <div className="border-4 border-white p-8 bg-white/5">
                   <img
-                    src="/images/llm-02-blonde-bw.png"
-                    alt="LLM Blonde B&W"
+                    src="/images/llm-01-blonde-color.jpg"
+                    alt="LLM Blonde Color"
                     className="w-full h-auto mb-6"
                   />
                   <div className="text-center space-y-2">
                     <h3 className="text-3xl font-black text-white">BLONDE</h3>
-                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Black & White Edition</p>
+                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Full Color Edition</p>
                     <div className="pt-4">
                       <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
                         SIGNATURE PIECE
