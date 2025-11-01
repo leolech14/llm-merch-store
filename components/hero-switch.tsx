@@ -421,7 +421,7 @@ function HeroSkate({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           <span className="text-sm font-bold uppercase tracking-widest text-primary">
             🛹 BOWL APPROVED
           </span>
-          <div className="h-1 flex-1 bg-gradient-to-r from-primary via-transparent to-transparent"></div>
+          <div className="h-1 flex-1 bg-gradient-to-l from-transparent via-primary to-transparent"></div>
         </div>
 
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-center text-white">
