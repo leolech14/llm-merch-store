@@ -1001,18 +1001,17 @@ function LLMClothingWebsite() {
               </p>
             </div>
             <div className="flex justify-center">
-              <div className="w-48 h-48 bg-white dark:bg-gray-900 border-4 border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-full h-full bg-black dark:bg-white rounded grid grid-cols-8 gap-[2px] p-2">
-                    {Array.from({ length: 64 }).map((_, i) => {
-                      const pattern = [1,0,1,1,0,1,0,0,0,1,0,0,1,1,0,1,1,0,1,0,0,1,1,0,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,0,1,1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1,0,1,1,1,0,1];
-                      return <div key={i} className={`w-full h-full ${pattern[i] === 1 ? 'bg-white dark:bg-black' : 'bg-black dark:bg-white'} rounded-sm`} />;
-                    })}
-                  </div>
-                </div>
+              <div className="p-8 bg-white/5 border-2 border-white/20 rounded-lg backdrop-blur-sm">
+                <img
+                  src="/qr-code.png"
+                  alt="QR Code - llmmerch.space"
+                  className="w-64 h-64 md:w-80 md:h-80"
+                />
+                <p className="mt-6 text-center text-sm text-white/70 font-mono">
+                  Scan to visit • llmmerch.space
+                </p>
               </div>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">Scan to visit our store</p>
           </div>
         </section>
 
