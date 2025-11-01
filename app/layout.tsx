@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "@/components/providers";
-import { LanguageProvider } from "@/lib/i18n";
-import { LanguageToggle } from "@/components/language-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,14 +31,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <LanguageProvider>
-          <Providers>
-            <LanguageToggle />
-            {children}
-            <Analytics />
-            <SpeedInsights />
-          </Providers>
-        </LanguageProvider>
+        <Providers>
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </Providers>
       </body>
     </html>
   );

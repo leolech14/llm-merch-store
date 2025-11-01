@@ -4,7 +4,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useLanguage } from "@/lib/i18n";
 import {
   Menu,
   ShoppingCart,
