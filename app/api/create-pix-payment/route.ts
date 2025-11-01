@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia' as any,
-});
-
 export async function POST(req: NextRequest) {
   try {
     const { amount, productId, productName } = await req.json();
+
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({
+        error: 'Stripe not configured. Add STRIPE_SECRET_KEY to Vercel environment variables.',
+      }, { status: 500 });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-11-20.acacia' as any,
+    });
 
     // Create PaymentIntent with PIX
     const paymentIntent = await stripe.paymentIntents.create({
