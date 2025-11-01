@@ -148,7 +148,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
           <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg">
             <div className="text-3xl font-bold text-white mb-2">1300%</div>
             <div className="text-sm font-medium text-white">Smarter (allegedly)</div>
-            <div className="text-xs text-white/60 mt-1">
+            <div className="text-xs text-white mt-1 font-semibold">
               Learn transformers by wearing them
             </div>
           </div>

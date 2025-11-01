@@ -34,6 +34,7 @@ import { Countdown } from "@/components/ui/countdown";
 import { Scoreboard } from "@/components/ui/scoreboard";
 import { ProductDetailModal } from "@/components/ui/product-detail-modal";
 import { VisitorPopup } from "@/components/ui/visitor-popup";
+import PixPaymentModal from "@/components/PixPaymentModal";
 import { HeaderStats } from "@/components/header-stats";
 import { HeroSwitch } from "@/components/hero-switch";
 import { WebsiteScaffold } from "@/components/website-scaffold";
@@ -422,6 +423,9 @@ function LLMClothingWebsite() {
   const [inventory, setInventory] = useState<Inventory | null>(null);
   const [marketPrices, setMarketPrices] = useState<MarketPrices | null>(null);
   const [teesLeft, setTeesLeft] = useState(31);
+  const [showPixModal, setShowPixModal] = useState(false);
+  const [pixData, setPixData] = useState<any>(null);
+  const [pixLoading, setPixLoading] = useState(false);
 
   // Track visitor and fetch all telemetry on page load
   useEffect(() => {
@@ -654,6 +658,41 @@ function LLMClothingWebsite() {
     },
   ];
 
+  const handleMakeOffer = async (productId: string, productName: string, currentPrice: number) => {
+    setPixLoading(true);
+    try {
+      const response = await fetch('/api/create-pix-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: currentPrice,
+          productId,
+          productName,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setPixData(data);
+        setShowPixModal(true);
+      } else {
+        alert('Failed to create PIX payment');
+      }
+    } catch (error) {
+      console.error('PIX error:', error);
+      alert('Error creating payment');
+    } finally {
+      setPixLoading(false);
+    }
+  };
+
+  const handlePixSuccess = () => {
+    setShowPixModal(false);
+    alert('Payment received!');
+    window.location.reload();
+  };
+
   return (
     <div className="w-full bg-background text-foreground">
       {/* Website Scaffold - Constant across all heroes */}
@@ -753,7 +792,7 @@ function LLMClothingWebsite() {
                   <Zap className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Actually Educational</h3>
-                <p className="text-muted-foreground">Real transformer diagrams. Actual neural network flows. Learn by wearing. Not just looking smart—getting smarter.</p>
+                <p className="text-white/70">Real transformer diagrams. Actual neural network flows. <span className="text-white font-semibold">Learn by wearing.</span> Not just looking smart—getting smarter.</p>
               </div>
               <div
                 className="text-center p-6 rounded-xl bg-muted/50 hover:bg-muted transition-colors animate-in fade-in duration-300"
@@ -925,7 +964,11 @@ function LLMClothingWebsite() {
         {inventory && (
           <section id="scoreboard" className="py-20 border-b border-border bg-muted/30">
             <div className="container mx-auto px-4">
-              <Scoreboard inventory={inventory} marketPrices={marketPrices || undefined} />
+              <Scoreboard
+                inventory={inventory}
+                marketPrices={marketPrices || undefined}
+                onMakeOffer={handleMakeOffer}
+              />
             </div>
           </section>
         )}
@@ -1127,6 +1170,18 @@ function LLMClothingWebsite() {
           </div>
         </footer>
       </div>
+
+      {/* PIX Payment Modal */}
+      {showPixModal && pixData && (
+        <PixPaymentModal
+          pixCode={pixData.pixCode}
+          qrCodeUrl={pixData.qrCodeUrl}
+          amount={pixData.amount}
+          paymentIntentId={pixData.paymentIntentId}
+          onSuccess={handlePixSuccess}
+          onCancel={() => setShowPixModal(false)}
+        />
+      )}
     </div>
   );
 }

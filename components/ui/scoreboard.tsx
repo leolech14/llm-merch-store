@@ -1,14 +1,13 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { ChevronDown, DollarSign } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 import type { Inventory, MarketPrices } from "@/types/api"
 
 interface ScoreboardProps {
   inventory: Inventory;
   marketPrices?: MarketPrices;
-  onMakeOffer?: (productId: string, productName: string) => void
+  onMakeOffer?: (productId: string, productName: string, price: number) => void
 }
 
 export function Scoreboard({ inventory, marketPrices, onMakeOffer }: ScoreboardProps) {
@@ -36,121 +35,90 @@ export function Scoreboard({ inventory, marketPrices, onMakeOffer }: ScoreboardP
   }
 
   return (
-    <div className="w-full space-y-8">
-      {/* Header - Minimal B&W */}
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl md:text-5xl font-black text-white">COLLECTOR SCOREBOARD</h2>
-        <div className="flex gap-6 justify-center items-center text-sm font-mono text-white/60">
+    <div className="w-full space-y-6">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-4xl font-black text-white mb-2">COLLECTOR SCOREBOARD</h2>
+        <div className="flex gap-4 justify-center text-xs font-mono text-white/50">
           <span>Claimed: {products.filter(p => p.sold).length}</span>
-          <span>•</span>
           <span>Available: {products.filter(p => !p.sold).length}</span>
-          <span>•</span>
           <span>Total: {products.length}</span>
         </div>
       </div>
 
-      {/* Clean List - No grid, just vertical */}
-      <div className="max-w-4xl mx-auto space-y-2">
+      {/* List */}
+      <div className="max-w-4xl mx-auto space-y-1">
         {products.map((product, index) => {
           const marketPrice = marketPrices?.marketPrices?.[product.id];
           const hasOffers = marketPrice && marketPrice.totalOffers > 0;
           const isExpanded = expandedTrades.has(product.id);
+          const currentPrice = marketPrice?.highestOffer || 149;
 
-          // Mock trade history (you'll replace with real data)
           const tradeHistory = hasOffers ? [
             { price: 149, buyer: "anon_001", date: "2d ago" },
-            { price: marketPrice.highestOffer, buyer: product.collectorNickname || "anon_002", date: "1d ago" },
+            { price: currentPrice, buyer: product.collectorNickname || "anon_002", date: "1d ago" },
           ] : [];
 
           return (
-            <motion.div
-              key={product.id}
-              className="border-2 border-white/20 bg-white/5 hover:border-white/40 transition-all"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
+            <div key={product.id} className="border border-white/20 bg-white/5">
               {/* Main Row */}
-              <div className="flex items-center gap-4 p-3">
+              <div className="flex items-center gap-3 p-2">
                 {/* Thumbnail */}
-                <div className="w-16 h-16 flex-shrink-0 bg-white/10 border border-white/20 overflow-hidden">
+                <div className="w-12 h-12 bg-white/10 border border-white/20">
                   <img
                     src={`/images/${product.id.toLowerCase().replace(/\s+/g, '-')}.jpg`}
                     alt={product.name}
                     className="w-full h-full object-cover grayscale"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-white/40 text-xs">IMG</div>';
                     }}
                   />
                 </div>
 
-                {/* Product Info */}
+                {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-mono text-white/40">
-                      #{String(index + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="text-sm font-semibold text-white truncate">
-                      {product.name}
-                    </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-white/30">#{String(index + 1).padStart(2, '0')}</span>
+                    <span className="text-sm font-semibold text-white truncate">{product.name}</span>
                   </div>
-
-                  {/* Buyer nickname or status */}
-                  {product.sold && product.collectorNickname ? (
-                    <div className="text-xs text-white/60 font-mono">
-                      @{product.collectorNickname}
-                    </div>
-                  ) : (
-                    <div className="text-xs text-white/40 font-mono">
-                      Available
-                    </div>
-                  )}
+                  <div className="text-xs text-white/50 font-mono">
+                    {product.sold && product.collectorNickname ? `@${product.collectorNickname}` : 'Available'}
+                  </div>
                 </div>
 
-                {/* Trade History Toggle (if has offers) */}
+                {/* Trades */}
                 {hasOffers && (
                   <button
                     onClick={() => toggleTradeHistory(product.id)}
-                    className="px-3 py-1 text-xs font-mono text-white/60 hover:text-white border border-white/20 hover:border-white/40 transition-colors"
+                    className="px-2 py-1 text-xs font-mono text-white/50 border border-white/20"
                   >
-                    <div className="flex items-center gap-1">
-                      <span>{marketPrice.totalOffers} trade{marketPrice.totalOffers !== 1 ? 's' : ''}</span>
-                      <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                    </div>
+                    {marketPrice.totalOffers} {isExpanded ? '▲' : '▼'}
                   </button>
                 )}
 
-                {/* Make Offer Button - Always on right */}
+                {/* Make Offer */}
                 <button
-                  onClick={() => onMakeOffer?.(product.id, product.name)}
-                  className="px-4 py-2 text-sm font-bold text-black bg-white hover:bg-white/90 transition-colors flex items-center gap-2 whitespace-nowrap"
+                  onClick={() => onMakeOffer?.(product.id, product.name, currentPrice)}
+                  className="px-3 py-1.5 text-xs font-bold text-black bg-white"
                 >
-                  <span>💰</span>
-                  <span>MAKE OFFER</span>
+                  💰 OFFER
                 </button>
               </div>
 
-              {/* Trade History Dropdown */}
+              {/* Trade History */}
               {isExpanded && hasOffers && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="border-t border-white/10 bg-white/5 px-3 py-2 space-y-1"
-                >
-                  <div className="text-xs font-mono text-white/40 mb-2">TRADE HISTORY</div>
+                <div className="border-t border-white/10 bg-black/20 px-2 py-1">
+                  <div className="text-xs font-mono text-white/30 mb-1">TRADES</div>
                   {tradeHistory.map((trade, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs font-mono py-1 border-b border-white/5 last:border-0">
-                      <span className="text-white/60">@{trade.buyer}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="text-white/40">{trade.date}</span>
-                        <span className="text-white font-semibold">R${trade.price}</span>
-                      </div>
+                    <div key={i} className="flex justify-between text-xs font-mono py-0.5 text-white/50">
+                      <span>@{trade.buyer}</span>
+                      <span>{trade.date}</span>
+                      <span className="text-white">R${trade.price}</span>
                     </div>
                   ))}
-                </motion.div>
+                </div>
               )}
-            </motion.div>
+            </div>
           );
         })}
       </div>

@@ -399,7 +399,7 @@ function HeroSkate({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
 
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-center">
           LEARN
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-pink-500">
+          <span className="block text-white">
             BY WEARING
           </span>
         </h1>
@@ -474,7 +474,7 @@ function HeroMinimal({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/70 font-mono">
-            IT IS ACTUALLY GENIUS
+            ACTUALLY WORKS!
           </p>
         </div>
 
