@@ -106,29 +106,30 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
           {stage === 'metoo' && (
             <motion.div
               key="mt-btns"
-              className="w-full space-y-6"
+              className="w-full space-y-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="text-5xl md:text-7xl font-black text-white">
-                SO CRINGY
+              <p className="text-xl md:text-3xl font-mono text-white/50 italic">
+                so cringy
               </p>
-              <div className="flex flex-col gap-4 items-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => {
                     const msg = encodeURIComponent("SO CRINGY\n\nComputer Mathy T-Shirts\n" + window.location.href);
                     window.open(`https://wa.me/?text=${msg}`, '_blank');
                   }}
-                  className="h-14 px-8 bg-white text-black font-bold text-base hover:bg-white/90 transition-colors"
+                  className="h-14 px-8 bg-green-600 hover:bg-green-700 text-white font-bold text-base transition-colors flex items-center gap-2"
                 >
-                  TELL EVERYONE
+                  <span>TELL EVERYONE</span>
+                  <span>💬</span>
                 </button>
 
                 <button
                   onClick={onCTAClick}
-                  className="text-sm text-white/60 hover:text-white underline"
+                  className="h-14 px-8 bg-white text-black font-bold text-base hover:bg-white/90 transition-colors"
                 >
                   Agree to continue
                 </button>

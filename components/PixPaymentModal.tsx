@@ -7,7 +7,7 @@ interface PixPaymentModalProps {
   pixCode: string;
   qrCodeUrl: string;
   amount: number;
-  paymentIntentId: string;
+  paymentHash: string;
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -16,7 +16,7 @@ export default function PixPaymentModal({
   pixCode,
   qrCodeUrl,
   amount,
-  paymentIntentId,
+  paymentHash,
   onSuccess,
   onCancel,
 }: PixPaymentModalProps) {
@@ -54,15 +54,16 @@ export default function PixPaymentModal({
 
     const pollInterval = setInterval(async () => {
       try {
-        const response = await fetch('/api/check-payment', {
+        const response = await fetch('/api/pix-payment-status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paymentIntentId }),
+          body: JSON.stringify({ paymentHash }),
         });
 
         const data = await response.json();
 
-        if (data.status === 'succeeded') {
+        // Check if payment is confirmed (status 'CO' in EBANX)
+        if (data.confirmed || data.status === 'CO') {
           clearInterval(pollInterval);
           onSuccess();
         }
@@ -72,7 +73,7 @@ export default function PixPaymentModal({
     }, 2000);
 
     return () => clearInterval(pollInterval);
-  }, [checking, paymentIntentId, onSuccess]);
+  }, [checking, paymentHash, onSuccess]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

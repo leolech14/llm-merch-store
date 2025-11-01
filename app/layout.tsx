@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LLMMerch - Cognitive Wearables That Make You 1300% Smarter",
+  title: "LLMMerch - Cognitive Wearables That Make You 1500% Smarter",
   description: "Skateboard bar approved. Educational tees that actually teach ML/AI concepts. Not streetwear. Not clothing. Cognitive Wearables. 100% fabric, NO electronic chips attached!",
 };
 

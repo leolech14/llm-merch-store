@@ -1,3 +1,18 @@
+# Cart API Integration - Quick Start
+
+## TLDR: What's Done & What's Needed
+
+### ✅ Completed (Ready to Use)
+- CartContext enhanced with API sync
+- Utilities added to `lib/utils.ts`
+- Custom hook `useCartSync()` created
+- Full documentation provided
+
+### ⚠️ One File Left to Create
+- `/app/api/cart/route.ts` - Copy template from `CART_API_IMPLEMENTATION.md`
+
+---
+
 # 🚀 Quick Start: Hero WTF no Next.js
 
 ## 🎯 **Opção A: Estático (Mais rápido)**

@@ -7,10 +7,11 @@ import type { Inventory, MarketPrices } from "@/types/api"
 interface ScoreboardProps {
   inventory: Inventory;
   marketPrices?: MarketPrices;
-  onMakeOffer?: (productId: string, productName: string, price: number) => void
+  onMakeOffer?: (productId: string, productName: string, price: number) => void;
+  onAddToCart?: (productId: string, productName: string, price: number, image: string) => void;
 }
 
-export function Scoreboard({ inventory, marketPrices, onMakeOffer }: ScoreboardProps) {
+export function Scoreboard({ inventory, marketPrices, onMakeOffer, onAddToCart }: ScoreboardProps) {
   const [expandedTrades, setExpandedTrades] = useState<Set<string>>(new Set())
 
   if (!inventory || !inventory.products) {
@@ -96,10 +97,19 @@ export function Scoreboard({ inventory, marketPrices, onMakeOffer }: ScoreboardP
                   </button>
                 )}
 
+                {/* Add to Cart */}
+                <button
+                  onClick={() => onAddToCart?.(product.id, product.name, currentPrice, `/images/products/${product.id}.png`)}
+                  className="px-3 py-1.5 text-xs font-bold text-white bg-black border border-white/40 hover:bg-white hover:text-black transition-colors"
+                  title="Add to cart"
+                >
+                  🛒
+                </button>
+
                 {/* Make Offer */}
                 <button
                   onClick={() => onMakeOffer?.(product.id, product.name, currentPrice)}
-                  className="px-3 py-1.5 text-xs font-bold text-black bg-white"
+                  className="px-3 py-1.5 text-xs font-bold text-black bg-white hover:bg-white/90 transition-colors"
                 >
                   💰 OFFER
                 </button>

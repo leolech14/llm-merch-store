@@ -35,10 +35,16 @@ import { Scoreboard } from "@/components/ui/scoreboard";
 import { ProductDetailModal } from "@/components/ui/product-detail-modal";
 import { VisitorPopup } from "@/components/ui/visitor-popup";
 import PixPaymentModal from "@/components/PixPaymentModal";
-import { HeaderStats } from "@/components/header-stats";
+import { HeaderCountdown } from "@/components/header-countdown";
+import { HeaderVisitor } from "@/components/header-visitor";
+import { HeaderProducts } from "@/components/header-products";
+import { HeaderCart } from "@/components/header-cart";
 import { HeroSwitch } from "@/components/hero-switch";
 import { WebsiteScaffold } from "@/components/website-scaffold";
 import { AIProviders } from "@/components/ai-providers";
+import { AIChat } from "@/components/ai-chat";
+import { CartDrawer } from "@/components/CartDrawer";
+import { useCart } from "@/context/CartContext";
 import type { Stats, SaleStatus, Inventory, MarketPrices } from "@/types/api";
 
 
@@ -390,6 +396,7 @@ function ProductCard({
       isOpen={isDetailOpen}
       onClose={() => setIsDetailOpen(false)}
       product={{
+        id: productId,
         name,
         price,
         description,
@@ -406,6 +413,10 @@ function ProductCard({
 
 // Main Website Component
 function LLMClothingWebsite() {
+  // Cart state
+  const { totalItems } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   const [visitorCount, setVisitorCount] = useState(0);
   const [visitorCountHistory, setVisitorCountHistory] = useState<string[]>([]);
   const [showVisitorPopup, setShowVisitorPopup] = useState(false);
@@ -658,10 +669,24 @@ function LLMClothingWebsite() {
     },
   ];
 
+  const { addToCart } = useCart();
+
+  const handleAddToCart = (productId: string, productName: string, price: number, image: string) => {
+    addToCart({
+      id: productId,
+      name: productName,
+      description: '',
+      price,
+      image,
+    });
+    // Optional: Open cart drawer automatically
+    setIsCartOpen(true);
+  };
+
   const handleMakeOffer = async (productId: string, productName: string, currentPrice: number) => {
     setPixLoading(true);
     try {
-      const response = await fetch('/api/create-pix-payment', {
+      const response = await fetch('/api/pix-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -677,7 +702,7 @@ function LLMClothingWebsite() {
         setPixData(data);
         setShowPixModal(true);
       } else {
-        alert('Failed to create PIX payment');
+        alert(`Failed to create PIX payment: ${data.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('PIX error:', error);
@@ -695,9 +720,6 @@ function LLMClothingWebsite() {
 
   return (
     <div className="w-full bg-background text-foreground">
-      {/* Website Scaffold - Constant across all heroes */}
-      <WebsiteScaffold />
-
       {/* Visitor Popup */}
       <VisitorPopup
         isOpen={showVisitorPopup}
@@ -717,13 +739,13 @@ function LLMClothingWebsite() {
             </div>
 
             {/* Center: Stats - Takes 50%, hidden on mobile */}
-            <div className="hidden md:flex flex-1 items-center justify-center gap-3">
-              <HeaderStats
-                visitorCount={visitorCount}
-                teesLeft={teesLeft}
-                totalTees={31}
-                saleStatus={saleStatus || undefined}
-              />
+            <div className="hidden md:flex flex-1 items-center justify-center gap-4">
+              <HeaderVisitor count={visitorCount} />
+              <HeaderProducts available={teesLeft} total={31} />
+              {saleStatus && saleStatus.status === 'before' && saleStatus.timeUntilStart && (
+                <HeaderCountdown targetDate={new Date(Date.now() + saleStatus.timeUntilStart)} />
+              )}
+              <HeaderCart itemCount={totalItems} onClick={() => setIsCartOpen(true)} />
             </div>
 
             {/* Right: Menu Button - Fixed position, extrema direita */}
@@ -777,6 +799,9 @@ function LLMClothingWebsite() {
           />
         </div>
 
+        {/* Website Scaffold - After Hero */}
+        <WebsiteScaffold />
+
         {/* Features Section */}
         <section id="features" className="py-20 border-b border-border">
           <div className="container mx-auto px-4">
@@ -792,7 +817,7 @@ function LLMClothingWebsite() {
                   <Zap className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Actually Educational</h3>
-                <p className="text-white/70">Real transformer diagrams. Actual neural network flows. <span className="text-white font-semibold">Learn by wearing.</span> Not just looking smart—getting smarter.</p>
+                <p className="text-white/70">Real transformer diagrams. Actual neural network flows. <span className="text-white font-semibold">Wear & learn.</span> Not just looking smart—getting smarter.</p>
               </div>
               <div
                 className="text-center p-6 rounded-xl bg-muted/50 hover:bg-muted transition-colors animate-in fade-in duration-300"
@@ -843,32 +868,48 @@ function LLMClothingWebsite() {
           </div>
         </section>
 
-        {/* AI Models Showcase */}
-        <section className="py-20 bg-black border-b border-white/10">
+        {/* AI Models Showcase - HIGHLIGHTED */}
+        <section className="py-32 bg-black border-y-4 border-white">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-4xl md:text-6xl font-bold text-center mb-12 text-white">The Models</h2>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="relative group overflow-hidden rounded-lg border border-white/20">
+              <div className="text-center mb-16">
+                <div className="inline-block px-6 py-2 bg-white text-black font-black text-sm mb-4">
+                  ⭐ FEATURED DESIGNS
+                </div>
+                <h2 className="text-5xl md:text-7xl font-black text-white mb-4">THE MODELS</h2>
+                <p className="text-lg text-white/60 font-mono">Large Language Model Editions</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-12">
+                <div className="border-4 border-white p-8 bg-white/5">
                   <img
                     src="/images/llm-brunette-bw.png"
-                    alt="Large Language Model - Brunette B&W"
-                    className="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                    alt="LLM Brunette B&W"
+                    className="w-full h-auto mb-6"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-sm border-t border-white/20 p-6">
-                    <h3 className="text-2xl font-black text-white mb-2">BRUNETTE EDITION</h3>
-                    <p className="text-sm text-white/70 font-mono">Large Language Model • B&W</p>
+                  <div className="text-center space-y-2">
+                    <h3 className="text-3xl font-black text-white">BRUNETTE</h3>
+                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Black & White Edition</p>
+                    <div className="pt-4">
+                      <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
+                        SIGNATURE PIECE
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="relative group overflow-hidden rounded-lg border border-white/20">
+                <div className="border-4 border-white p-8 bg-white/5">
                   <img
                     src="/images/llm-blonde-bw.png"
-                    alt="Large Language Model - Blonde B&W"
-                    className="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                    alt="LLM Blonde B&W"
+                    className="w-full h-auto mb-6"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-sm border-t border-white/20 p-6">
-                    <h3 className="text-2xl font-black text-white mb-2">BLONDE EDITION</h3>
-                    <p className="text-sm text-white/70 font-mono">Large Language Model • B&W</p>
+                  <div className="text-center space-y-2">
+                    <h3 className="text-3xl font-black text-white">BLONDE</h3>
+                    <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Black & White Edition</p>
+                    <div className="pt-4">
+                      <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
+                        SIGNATURE PIECE
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -968,6 +1009,7 @@ function LLMClothingWebsite() {
                 inventory={inventory}
                 marketPrices={marketPrices || undefined}
                 onMakeOffer={handleMakeOffer}
+                onAddToCart={handleAddToCart}
               />
             </div>
           </section>
@@ -1083,6 +1125,21 @@ function LLMClothingWebsite() {
         {/* AI Providers + QR Code */}
         <AIProviders />
 
+        {/* AI Chat Input */}
+        <section className="py-16 bg-black border-b border-white/10">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-3">
+                ASK CLAUDE
+              </h2>
+              <p className="text-base text-white/60 font-mono">
+                Questions about the store? Ask AI.
+              </p>
+            </div>
+            <AIChat />
+          </div>
+        </section>
+
         {/* Contact Section */}
         <section id="contact" className="py-20 border-b border-border">
           <div className="container mx-auto px-4">
@@ -1177,11 +1234,14 @@ function LLMClothingWebsite() {
           pixCode={pixData.pixCode}
           qrCodeUrl={pixData.qrCodeUrl}
           amount={pixData.amount}
-          paymentIntentId={pixData.paymentIntentId}
+          paymentHash={pixData.paymentHash}
           onSuccess={handlePixSuccess}
           onCancel={() => setShowPixModal(false)}
         />
       )}
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 }

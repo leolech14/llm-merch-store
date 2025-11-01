@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp } from "lucide-react";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 
 interface HeroMoneyProps {
   visitorCount: number;
@@ -23,9 +22,9 @@ interface HeroMoneyProps {
  */
 export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyProps) {
   return (
-    <AuroraBackground className="w-full min-h-screen">
+    <section className="w-full min-h-screen bg-background flex items-center px-4 py-20">
       <motion.div
-        className="max-w-5xl mx-auto text-center space-y-8 px-4 relative z-10"
+        className="max-w-5xl mx-auto text-center space-y-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -149,7 +148,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
             <div className="text-3xl font-bold text-white mb-2">1500%</div>
             <div className="text-sm font-medium text-white">Smarter (allegedly)</div>
             <div className="text-xs text-white mt-1 font-semibold">
-              Learn transformers by wearing them
+              Wear & learn transformers
             </div>
           </div>
         </motion.div>
@@ -170,6 +169,6 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
         )}
 
       </motion.div>
-    </AuroraBackground>
+    </section>
   );
 }

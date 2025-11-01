@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ShoppingCart, Check, Zap, ArrowRight } from "lucide-react";
 import { HeroStrikethrough } from "./hero-variants/hero-strikethrough";
 import { HeroMoney } from "./hero-variants/hero-money";
+import { HeroMoneyWTF } from "./hero-variants/hero-money-wtf";
 import { HeroAIFailure } from "./hero-variants/hero-ai-failure";
 import { HeroNavigation } from "./hero-navigation";
 
@@ -33,7 +34,7 @@ import { HeroNavigation } from "./hero-navigation";
  *   ?hero=money (TALK SHIT / MAKE MONEY - aggressive conversion)
  */
 
-type HeroVariant = "cognitive" | "wtf" | "skate" | "minimal" | "joke" | "experiment" | "money" | "ai-failure";
+type HeroVariant = "cognitive" | "wtf" | "skate" | "minimal" | "joke" | "experiment" | "money" | "money-wtf" | "ai-failure";
 
 interface HeroSwitchProps {
   variant?: HeroVariant | "auto";
@@ -56,8 +57,32 @@ export function HeroSwitch({
   onCTAClick
 }: HeroSwitchProps) {
   const [activeVariant, setActiveVariant] = useState<HeroVariant>("cognitive");
-  const variants: HeroVariant[] = ["ai-failure", "money", "experiment", "skate", "minimal", "joke"];
+  const variants: HeroVariant[] = ["ai-failure", "money", "money-wtf", "experiment", "skate", "minimal", "joke"];
   const currentIndex = variants.indexOf(activeVariant);
+
+  // Keyboard navigation: A = previous, D = next
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'd' || e.key === 'D') {
+        // Next hero
+        const nextIndex = (currentIndex + 1) % variants.length;
+        const nextVariant = variants[nextIndex];
+        setActiveVariant(nextVariant);
+        localStorage.setItem('hero_variant', nextVariant);
+        trackHeroView(nextVariant, 'keyboard_d');
+      } else if (e.key === 'a' || e.key === 'A') {
+        // Previous hero
+        const prevIndex = (currentIndex - 1 + variants.length) % variants.length;
+        const prevVariant = variants[prevIndex];
+        setActiveVariant(prevVariant);
+        localStorage.setItem('hero_variant', prevVariant);
+        trackHeroView(prevVariant, 'keyboard_a');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentIndex, variants]);
 
   // Determine variant on mount
   useEffect(() => {
@@ -65,7 +90,7 @@ export function HeroSwitch({
     const params = new URLSearchParams(window.location.search);
     const urlVariant = params.get('hero') as HeroVariant | null;
 
-    if (urlVariant && ["cognitive", "wtf", "skate", "minimal", "joke", "experiment"].includes(urlVariant)) {
+    if (urlVariant && ["cognitive", "wtf", "skate", "minimal", "joke", "experiment", "money", "ai-failure"].includes(urlVariant)) {
       setActiveVariant(urlVariant);
       localStorage.setItem('hero_variant', urlVariant);
       trackHeroView(urlVariant, 'url_param');
@@ -82,14 +107,14 @@ export function HeroSwitch({
 
     // 3. Check localStorage (returning visitor)
     const stored = localStorage.getItem('hero_variant') as HeroVariant | null;
-    if (stored && ["cognitive", "wtf", "skate", "minimal", "joke", "experiment"].includes(stored)) {
+    if (stored && ["ai-failure", "money", "experiment", "skate", "minimal", "joke"].includes(stored)) {
       setActiveVariant(stored);
       trackHeroView(stored, 'returning');
       return;
     }
 
     // 4. Random A/B test for new visitors
-    const variants: HeroVariant[] = ["cognitive", "wtf", "skate", "minimal", "joke", "experiment"];
+    const variants: HeroVariant[] = ["ai-failure", "money", "experiment", "skate", "minimal", "joke"];
     const random = variants[Math.floor(Math.random() * variants.length)];
     setActiveVariant(random);
     localStorage.setItem('hero_variant', random);
@@ -150,6 +175,8 @@ export function HeroSwitch({
       return <HeroJoke visitorCount={visitorCount} saleStatus={saleStatus} onCTAClick={() => trackCTA("joke")} />;
     case "money":
       return <HeroMoney visitorCount={visitorCount} saleStatus={saleStatus} onCTAClick={() => trackCTA("money")} />;
+    case "money-wtf":
+      return <HeroMoneyWTF visitorCount={visitorCount} saleStatus={saleStatus} onCTAClick={() => trackCTA("money-wtf")} />;
     case "ai-failure":
       return <HeroAIFailure visitorCount={visitorCount} saleStatus={saleStatus} onCTAClick={() => trackCTA("ai-failure")} />;
     case "experiment":
@@ -397,11 +424,8 @@ function HeroSkate({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           <div className="h-1 flex-1 bg-gradient-to-r from-primary via-transparent to-transparent"></div>
         </div>
 
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-center">
-          LEARN
-          <span className="block text-white">
-            BY WEARING
-          </span>
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-center text-white">
+          WEAR & LEARN
         </h1>
 
         <p className="text-xl md:text-2xl text-center max-w-2xl mx-auto">

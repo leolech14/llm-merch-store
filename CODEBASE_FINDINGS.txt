@@ -1,0 +1,433 @@
+================================================================================
+                    CODEBASE ANALYSIS - FINDINGS REPORT
+                     LLM Merch Store (llm-merch-store)
+================================================================================
+
+ANALYSIS DATE: November 1, 2025
+SCOPE: Routes, Components, APIs, Navigation, Orphaned Code
+
+================================================================================
+TASK 1: MAP ALL UI-ACCESSIBLE ROUTES
+================================================================================
+
+ROUTE: / (HOMEPAGE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /app/page.tsx (1220 lines)
+
+COMPONENTS RENDERED:
+  • HeroSwitch (manages 8 hero variants with A/B testing)
+    - HeroCognitive, HeroWTF, HeroSkate, HeroMinimal, HeroJoke (inline)
+    - HeroMoney (imported from hero-variants)
+    - HeroAIFailure (imported from hero-variants)
+    - HeroStrikethrough (imported as "experiment" variant)
+  • WebsiteScaffold
+  • Headers: HeaderCountdown, HeaderVisitor, HeaderProducts
+  • Scoreboard, ProductDetailModal, VisitorPopup
+  • AIChat, AIProviders, PixPaymentModal
+  • UI Components: Accordion, TextRotate, Countdown, Button, Card, Input, Textarea
+
+APIS CALLED:
+  POST   /api/telemetry              (track visitor/page_view/add_to_cart)
+  POST   /api/visitors               (get visitor count)
+  GET    /api/stats                  (get engagement stats)
+  GET    /api/sale-status            (get sale timing)
+  GET    /api/inventory              (get product availability)
+  GET    /api/market-prices          (get pricing)
+  POST   /api/pix-payment            (generate PIX QR code)
+  POST   /api/ask                    (AI chat responses)
+
+NAVIGATION PATHS:
+  TO THIS ROUTE:
+    - Direct URL access /
+    - Back link from /admin
+    - Auth sign-out redirects
+    - Logo links from other pages
+
+  FROM THIS ROUTE:
+    - Hash anchors: #hero, #pricing, #features, #testimonials, #proof, #faq, #contact
+    - /admin (if authenticated, in header menu)
+    - Browser back button
+    - Hero navigation arrows (left/right at bottom)
+
+SPECIAL FEATURES:
+  • URL hero override: ?hero=cognitive|wtf|skate|minimal|joke|money|ai-failure|experiment
+  • localStorage persistence of hero variant selection
+  • Manual hero cycling with left/right arrow buttons (fixed position bottom)
+
+────────────────────────────────────────────────────────────────────────────────
+
+ROUTE: /admin (ADMIN DASHBOARD - PROTECTED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /app/admin/page.tsx (480 lines)
+
+AUTHENTICATION:
+  REQUIRED: NextAuth Google login + isAdmin flag in session.user
+  FALLBACK: Shows 403 "Unauthorized" page if not admin
+
+COMPONENTS RENDERED:
+  • StatCard (inline) - metrics display
+  • ToggleControl (inline) - feature toggles
+  • HeroVariantCard (inline) - A/B testing results
+  • Educational insights section
+
+APIS CALLED:
+  GET    /api/metrics                (refreshes every 10 seconds)
+  GET    /api/admin/hero-config      (hero A/B test results)
+  POST   /api/admin/system-config    (toggle: progressiveHeroEnabled, 
+                                      abTestingEnabled, analyticsEnabled)
+
+NAVIGATION PATHS:
+  TO THIS ROUTE:
+    - /auth/signin with callbackUrl=/admin
+    - Direct URL access (redirects to signin if not authenticated)
+    - Header menu link (visible only when authenticated)
+
+  FROM THIS ROUTE:
+    - "Sign Out" button → / (signOut with callbackUrl: '/')
+    - "Back to Store" button → /
+    - Browser back button
+
+DATA TRACKED:
+  • Total visitors, page views, add-to-cart events
+  • Total sales, top products
+  • Hero variant performance (wtf, cognitive, skate, minimal)
+  • Product likes
+
+────────────────────────────────────────────────────────────────────────────────
+
+ROUTE: /charts (HIDDEN ANALYTICS DASHBOARD - PUBLIC)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /app/charts/page.tsx (250 lines)
+
+STATUS: Publicly accessible but NOT in navigation menu
+
+COMPONENTS RENDERED:
+  • WebsiteScaffold
+  • Recharts: PieChart (inventory), BarChart
+
+APIS CALLED:
+  GET    /api/stats                  (all stats)
+  GET    /api/inventory              (inventory data)
+
+DISPLAYS:
+  • Real-time visitor count, page views, add-to-cart, sales
+  • Inventory pie chart (available vs sold)
+  • Top 5 products with click counts
+  • Engagement rate
+
+NAVIGATION PATHS:
+  TO THIS ROUTE:
+    - Direct URL access /charts
+    - No UI links
+
+  FROM THIS ROUTE:
+    - Logo link → /
+    - Browser back button
+
+NOTE: Data updates every 10 seconds
+
+────────────────────────────────────────────────────────────────────────────────
+
+ROUTE: /auth/signin (SIGN-IN PAGE - PUBLIC)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /app/auth/signin/page.tsx (97 lines)
+
+COMPONENTS:
+  • Google Sign-In button
+  • Info text about admin access
+
+OAUTH:
+  • Redirects to Google OAuth
+  • Callback URL: /admin
+
+NAVIGATION PATHS:
+  TO THIS ROUTE:
+    - Admin auth flow (when trying to access /admin without login)
+
+  FROM THIS ROUTE:
+    - Sign-in success → /admin
+    - "← Back to store" link → /
+
+────────────────────────────────────────────────────────────────────────────────
+
+ROUTE: /auth/unauthorized (403 PAGE - PUBLIC)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: /app/auth/unauthorized/page.tsx (50 lines)
+
+SHOWN WHEN:
+  • User is logged in but doesn't have isAdmin flag
+  • Accessed via auth middleware
+
+NAVIGATION:
+  • "Back to Store" button → /
+  • "Sign out" button → /
+
+================================================================================
+TASK 2: FIND ORPHANED CODE
+================================================================================
+
+BACKUP/TEMPORARY FILES (SAFE TO DELETE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FILE: /components/hero-variants/hero-strikethrough-complex.tsx.bak
+  Status:       Backup file (8.3 KB)
+  Created:      Oct 31 00:25
+  Imported:     NEVER (grep found 0 references)
+  Action:       DELETE - It's a backup file
+
+FILE: /components/hero-variants/hero-strikethrough.tsx.tmp
+  Status:       Temporary file (8.3 KB)
+  Created:      Oct 31 00:19
+  Imported:     NEVER
+  Action:       DELETE - It's a temporary file
+
+Analysis: Both from hero redesign iteration. Real hero-strikethrough.tsx exists
+and is integrated as "experiment" variant.
+
+────────────────────────────────────────────────────────────────────────────────
+
+UNUSED COMPONENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FILE: /components/header-stats.tsx
+  Lines:        68
+  Status:       Exists but NOT imported anywhere
+  Could be:     Used in /charts or /admin dashboard
+  Action:       DECIDE - Delete or integrate
+
+FILE: /components/language-toggle.tsx
+  Lines:        35
+  Status:       Imported in layout.tsx
+  Action:       KEEP - It's integrated (language switching)
+
+────────────────────────────────────────────────────────────────────────────────
+
+HERO VARIANTS ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ALL HERO VARIANTS ARE ACCESSIBLE:
+
+ACTIVE ROTATION (6 variants):
+  1. hero-ai-failure.tsx      (122 lines) - IMPORTED, rotating
+  2. hero-money.tsx           (174 lines) - IMPORTED, rotating
+  3. hero-strikethrough.tsx   (230 lines) - IMPORTED as "experiment", rotating
+  4. HeroSkate                (inline) - INLINE, rotating
+  5. HeroMinimal              (inline) - INLINE, rotating
+  6. HeroJoke                 (inline) - INLINE, rotating
+
+NOT IN ACTIVE ROTATION (but accessible):
+  7. HeroCognitive            (inline) - INLINE, fallback/accessible via ?hero=cognitive
+  8. HeroWTF                  (inline) - INLINE, accessible via ?hero=wtf
+
+FINDING: NO orphaned hero variants. All 8 are accessible.
+
+────────────────────────────────────────────────────────────────────────────────
+
+API ROUTES USAGE ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+All API routes are ACTIVELY USED:
+
+TELEMETRY & ANALYTICS:
+  /api/telemetry              Called by: page.tsx (3x)
+  /api/visitors               Called by: page.tsx
+  /api/stats                  Called by: page.tsx, charts.tsx, admin.tsx
+  /api/sale-status            Called by: page.tsx (initial + poll)
+  /api/inventory              Called by: page.tsx, charts.tsx
+  /api/market-prices          Called by: page.tsx
+  /api/metrics                Called by: admin.tsx (every 10s)
+
+BUSINESS LOGIC:
+  /api/pix-payment            Called by: page.tsx (handleMakeOffer)
+  /api/ask                    Called by: ai-chat.tsx, product-detail-modal.tsx
+
+ADMIN:
+  /api/admin/hero-config      Called by: admin.tsx
+  /api/admin/system-config    Called by: admin.tsx
+
+AUTH:
+  /api/auth/[...nextauth]     Called by: NextAuth provider
+
+WEBHOOKS:
+  /api/webhook/pix-payment    External webhook (PIX payment callback)
+
+FINDING: NO orphaned API routes. All 12+ are actively called.
+
+================================================================================
+TASK 3: NAVIGATION FLOW - "Can you navigate away and come back?"
+================================================================================
+
+ANSWER: YES - Full navigation support exists
+
+BACK BUTTON ANALYSIS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CURRENT IMPLEMENTATION:
+  • NO explicit "back" button on homepage
+  • Browser back button WORKS (browser history)
+  • Navigation is primarily hash-based (#hero, #pricing, etc.)
+  • Admin page: explicit "Back to Store" button → /
+  • Auth pages: "← Back to store" links → /
+
+NAVIGATION WITHIN HOMEPAGE:
+  ✓ Browser back/forward: Works (navigates to previous pages)
+  ✓ Hash anchors: #pricing → #hero → #faq (scroll, no history)
+  ✓ Hero arrows: Left/right cycle through variants (bottom fixed)
+  ✓ Logo: Links to # home
+  ✓ Menu: Links to sections (#pricing, #features, #contact, #faq)
+
+NAVIGATION FROM ADMIN:
+  ✓ "Back to Store" button: Returns to home
+  ✓ Sign-out: Redirects to home
+  ✓ Browser back: Works
+
+NAVIGATION FROM AUTH:
+  ✓ "Back to store" link: Returns to home
+  ✓ Browser back: Works
+
+DEAD ENDS: NONE FOUND
+  ✓ Every page has explicit back navigation or browser back works
+  ✓ Home page has hash anchors for section navigation
+  ✓ All secondary pages can access home via logo/menu
+
+================================================================================
+TASK 4: WTF HERO & INPUT BAR
+================================================================================
+
+WTF HERO COMPONENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FINDING: YES, IT EXISTS
+
+LOCATION: /components/hero-switch.tsx (lines 294-375)
+DEFINITION: Inline function HeroWTF()
+
+CONTENT:
+  Title:   "WTF?" with "Que porra é essa?" (Portuguese)
+  Message: "Camisetas que ensinam IA/ML"
+  Features: Educational vibes, conversion-focused design
+
+HOW TO ACCESS:
+  Primary:    Via URL param: ?hero=wtf (works at line 68)
+  Secondary:  Browser history if previously viewed
+  Direct:     Not in automatic rotation
+
+ACTIVE ROTATION STATUS:
+  The variants array (line 59) is:
+    ["ai-failure", "money", "experiment", "skate", "minimal", "joke"]
+
+  WTF is NOT in this array
+  BUT it IS defined in the switch statement (line 141-144)
+  So it CAN be selected via ?hero=wtf
+
+ADMIN PANEL:
+  - Shows WTF stats (line 43: wtf?: HeroVariantStats)
+  - HeroVariantCard rendered for WTF (lines 301-306)
+  - So performance is being tracked
+
+CONCLUSION:
+  ✓ Component FULLY DEFINED (not deleted)
+  ✓ Component IS ACCESSIBLE (?hero=wtf works)
+  ✓ Component NOT IN ROTATION (not auto-selected)
+  ✓ Component INTENTIONALLY EXCLUDED (careful removal, not accident)
+  ✓ Performance IS TRACKED (admin panel shows stats)
+
+STATUS: Intentionally deprioritized. Exists, accessible via URL, but not
+        in automatic A/B test rotation.
+
+────────────────────────────────────────────────────────────────────────────────
+
+AI INPUT BAR (ASK CLAUDE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FINDING: YES, IT EXISTS AND IS FULLY INTEGRATED
+
+LOCATION: /components/ai-chat.tsx (78 lines)
+
+FEATURES:
+  • Text input: "Ask anything about the store..."
+  • Submit button: "ASK"
+  • Loading state: "THINKING..."
+  • Response display: Animated answer box below
+
+HOMEPAGE INTEGRATION:
+  File: /app/page.tsx (line 1115)
+  Section: "ASK CLAUDE" (black background section, lines 1105-1117)
+  Visible: Yes, scrollable section on homepage
+
+ALSO USED IN:
+  • /components/ui/product-detail-modal.tsx (lines 255-280)
+  • Same API call pattern
+
+API CONNECTION:
+  Endpoint:     POST /api/ask
+  Payload:      { question: string }
+  Response:     { answer: string, error?: string }
+  System Prompt: Portuguese AI personality ("Cognitive Wearables" assistant)
+
+STATUS: FULLY INTEGRATED AND FUNCTIONAL
+  ✓ Component created and actively used
+  ✓ Integrated in multiple places (homepage + modal)
+  ✓ Connected to working API
+  ✓ Not orphaned
+  ✓ Visible to users
+
+================================================================================
+CRITICAL FINDINGS & RECOMMENDATIONS
+================================================================================
+
+1. WTF HERO IS IN CODE BUT NOT IN ROTATION
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   • Component fully defined (81 lines of code)
+   • Admin dashboard still tracks it (wtf stats visible)
+   • Intentionally excluded from variants array
+   • Can be forced via ?hero=wtf
+   • Likely deprioritized in favor of money/ai-failure/etc.
+
+   DECISION NEEDED:
+   - Is WTF hero deprecated? Document it.
+   - Should it be re-enabled in rotation?
+   - Update admin code if truly unused.
+
+2. AI INPUT BAR IS NOT ORPHANED
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   • Clean implementation (78 lines)
+   • Properly integrated (visible on homepage)
+   • Connected to real /api/ask endpoint
+   • Used in product modal too
+   • Portuguese system prompt (matches store theme)
+   • Status: Working, fully integrated
+
+3. CLEAN ARCHITECTURE
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   • NO orphaned API routes (all 12+ used)
+   • NO orphaned hero variants (all accessible)
+   • Navigation is robust (no dead ends)
+   • A/B testing framework clean
+   • Admin dashboard functional
+   • Code well organized
+
+4. ORPHANED CODE TO CLEAN
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DELETE SAFELY:
+   - /components/hero-variants/hero-strikethrough-complex.tsx.bak
+   - /components/hero-variants/hero-strikethrough.tsx.tmp
+
+   REVIEW (DECIDE):
+   - /components/header-stats.tsx (exists but unused)
+
+================================================================================
+DOCUMENTATION GENERATED
+================================================================================
+
+Documents Created:
+  1. CODEBASE_COMPLETE_MAP.md   (16 KB - Full detailed analysis)
+  2. ANALYSIS_SUMMARY.md        (Quick reference table)
+  3. CODEBASE_FINDINGS.txt      (This file - Executive summary)
+
+================================================================================

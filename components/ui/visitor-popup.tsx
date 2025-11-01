@@ -117,7 +117,7 @@ export function VisitorPopup({ isOpen, onClose, visitorCount }: VisitorPopupProp
               whileHover={{ scale: showUpdate ? 1 : 1.02 }}
               whileTap={{ scale: showUpdate ? 1 : 0.98 }}
             >
-              {showUpdate ? "Updating..." : "Ok."}
+              {showUpdate ? "Updating..." : "KEEP GOING"}
             </motion.button>
 
             {/* Auto-close hint - Compact */}

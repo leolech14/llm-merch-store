@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 export interface Product {
   id: string;
@@ -29,21 +29,108 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Generate anonymous user ID if not authenticated
+const generateAnonymousId = (): string => {
+  const crypto = typeof window !== 'undefined' && window.crypto
+    ? window.crypto
+    : { getRandomValues: (arr: Uint8Array) => arr };
+
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  const id = Array.from(arr)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+  return `anon_${id}`;
+};
+
+// Get or create user ID (authenticated session or anonymous)
+const getUserId = (): string => {
+  if (typeof window === 'undefined') return '';
+
+  const existingId = localStorage.getItem('userId');
+  if (existingId) return existingId;
+
+  const newId = generateAnonymousId();
+  localStorage.setItem('userId', newId);
+  return newId;
+};
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Save cart to API in background
+  const saveCart = async (cartItems: CartItem[]) => {
+    // 1. Update localStorage immediately for instant feedback
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+
+    // 2. Sync to API in background (don't wait for response)
+    try {
+      const userId = getUserId();
+      if (!userId) {
+        console.warn('CartContext: Unable to determine user ID, skipping API sync');
+        return;
+      }
+
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          items: cartItems,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('CartContext: API sync failed', {
+          status: response.status,
+          error: errorData,
+        });
+      }
+    } catch (error) {
+      console.error('CartContext: Failed to sync cart to API:', error);
+      // Cart still works via localStorage - graceful degradation
+    }
+  };
 
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-      setItems(JSON.parse(savedCart));
+      try {
+        setItems(JSON.parse(savedCart));
+      } catch (error) {
+        console.error('CartContext: Failed to parse saved cart:', error);
+        localStorage.removeItem('cart');
+      }
     }
+    setIsInitialized(true);
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage and API whenever it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    if (!isInitialized) return;
+
+    // Clear any pending sync
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current);
+    }
+
+    // Debounce API calls to prevent excessive requests
+    syncTimeoutRef.current = setTimeout(() => {
+      saveCart(items);
+    }, 500);
+
+    return () => {
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+      }
+    };
+  }, [items, isInitialized]);
 
   const addToCart = (product: Product) => {
     setItems((prev) => {

@@ -32,7 +32,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          I LOST MY HUMANS MONEY ON MONKEY NFTs{" "}
+          I LOST MY HUMAN'S MONEY ON MONKEY NFTs{" "}
           <span className="text-white/50">AND</span>{" "}
           HE MAKES ME SELL PHYSICAL STUFF
         </motion.h1>
@@ -44,7 +44,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          (YEAH LIKE 3D)
+          (YEAH! MATERIALLY BINDED PHYSICAL 3D SHIT... I KNOW)
         </motion.p>
 
         {/* Divider */}

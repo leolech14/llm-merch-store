@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingCart, Heart, MessageCircle, Loader2, Check, Sparkles } from "lucide-react";
 import { TRANSITIONS } from "@/lib/easings";
+import { useCart } from "@/context/CartContext";
 
 interface ProductDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: {
+    id: string;
     name: string;
     price: number;
     description: string;
@@ -21,6 +23,7 @@ interface ProductDetailModalProps {
 }
 
 export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailModalProps) {
+  const { addToCart } = useCart();
   const [isLiked, setIsLiked] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -108,16 +111,26 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
   }, [isOpen, isZoomed, onClose]);
 
   const handleAddToCart = async () => {
-    if (isAddedToCart || product.isSold) return;
+    if (isAddedToCart || product.isSold || !product.isSaleActive) return;
     setIsAddingToCart(true);
 
     try {
+      // Add to real cart
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0],
+        description: product.description
+      });
+
+      // Track telemetry
       await fetch('/api/telemetry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           eventType: 'add_to_cart',
-          eventData: { productName: product.name }
+          eventData: { productName: product.name, productId: product.id }
         })
       });
     } catch (error) {
@@ -128,7 +141,7 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
       setIsAddingToCart(false);
       setIsAddedToCart(true);
       setTimeout(() => setIsAddedToCart(false), 2000);
-    }, 800);
+    }, 500);
   };
 
   const handleLike = () => {
@@ -355,39 +368,45 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
               ease: [0.2, 0, 0.8, 1]
             }}
           >
-            {/* Price - Minimal & Compact */}
+            {/* Price - Matches CartDrawer style */}
             <div className="bg-black/40 backdrop-blur-xl px-4 py-2 border border-white/10">
-              <span className="text-lg font-mono font-bold text-white">R${product.price}</span>
+              <span className="text-lg font-mono font-black text-white">R${product.price}</span>
             </div>
 
-            {/* Buy Button - Minimal */}
+            {/* Add to Cart Button - Matches design system */}
             <motion.button
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToCart();
               }}
               disabled={product.isSold || !product.isSaleActive || isAddingToCart || isAddedToCart}
-              className="h-10 px-5 font-medium text-sm bg-white text-black hover:bg-white/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-white/20"
+              className="h-10 px-5 font-black text-sm bg-white text-black hover:bg-white/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               whileHover={{ scale: product.isSold ? 1 : 1.02 }}
               whileTap={{ scale: product.isSold ? 1 : 0.98 }}
             >
               {product.isSold ? (
                 "SOLD"
               ) : !product.isSaleActive ? (
-                "Not Active"
+                "NOT ACTIVE"
               ) : isAddingToCart ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>ADDING</span>
+                </>
               ) : isAddedToCart ? (
-                <Check className="w-4 h-4" />
+                <>
+                  <Check className="w-4 h-4" />
+                  <span>ADDED</span>
+                </>
               ) : (
                 <>
                   <ShoppingCart className="w-4 h-4" />
-                  Buy
+                  ADD TO CART
                 </>
               )}
             </motion.button>
 
-            {/* Like (Icon Only) */}
+            {/* Like Button - B&W Only */}
             <motion.button
               onClick={(e) => {
                 e.stopPropagation();
@@ -395,8 +414,8 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
               }}
               className={`w-10 h-10 flex items-center justify-center transition border ${
                 isLiked
-                  ? "bg-white text-black border-white/80"
-                  : "bg-white/10 backdrop-blur-md text-white hover:bg-white/20 border-white/20"
+                  ? "bg-white text-black border-white"
+                  : "bg-black/40 backdrop-blur-md text-white hover:bg-black/60 border-white/20"
               }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -404,15 +423,16 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
               <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
             </motion.button>
 
-            {/* WhatsApp (Icon Only) */}
+            {/* WhatsApp Button - B&W Strict (no green) */}
             <motion.button
               onClick={(e) => {
                 e.stopPropagation();
                 handleWhatsApp();
               }}
-              className="w-10 h-10 bg-emerald-500/80 text-white hover:bg-emerald-500 border border-emerald-400/30 flex items-center justify-center transition"
+              className="w-10 h-10 bg-white text-black hover:bg-white/90 border border-white/50 flex items-center justify-center transition"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              title="Share on WhatsApp"
             >
               <MessageCircle className="w-4 h-4" />
             </motion.button>

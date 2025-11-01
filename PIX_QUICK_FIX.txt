@@ -1,0 +1,212 @@
+================================================================================
+                    PIX PAYMENT FIX - QUICK REFERENCE CARD
+================================================================================
+
+ISSUE: "The payment method type 'pix' is invalid"
+ROOT CAUSE: PIX capability not enabled on your Stripe account
+SOLUTION: Enable it (1-2 minutes)
+
+================================================================================
+                              STEP-BY-STEP FIX
+================================================================================
+
+OPTION 1: VIA STRIPE DASHBOARD (FASTEST - 2 MINUTES)
+────────────────────────────────────────────────────
+
+1. Go to: https://dashboard.stripe.com
+2. Click Settings (gear icon top-right)
+3. Click "Payment methods" in left menu
+4. Search for "Pix"
+5. Click "Activate" or "Request" button
+6. Done!
+
+Timeline: Usually immediate approval
+
+
+OPTION 2: VIA API ENDPOINT (PROGRAMMATIC)
+──────────────────────────────────────────
+
+curl -X POST http://localhost:3000/api/enable-pix-capability
+
+Timeline: 24-48 hours for approval
+
+
+OPTION 3: VIA STRIPE CLI
+────────────────────────
+
+stripe accounts retrieve  # Check current status
+stripe account request pix_payments  # Request capability
+
+Timeline: 24-48 hours for approval
+
+
+OPTION 4: VIA CURL DIRECTLY
+────────────────────────────
+
+curl https://api.stripe.com/v1/account/capabilities/pix_payments \
+  -X POST \
+  -u sk_test_YOUR_KEY_HERE: \
+  -d "requested=true"
+
+Timeline: 24-48 hours for approval
+
+================================================================================
+                              VERIFY IT WORKS
+================================================================================
+
+1. CHECK STATUS:
+   curl http://localhost:3000/api/check-pix-capability
+
+   Expected in response: "canCreatePixPayments": true
+
+
+2. TEST PIX PAYMENT:
+   curl -X POST http://localhost:3000/api/create-pix-payment \
+     -H "Content-Type: application/json" \
+     -d '{
+       "amount": 29.99,
+       "productId": "test-merch",
+       "productName": "Test Product"
+     }'
+
+   Expected in response: "pixCode", "qrCodeUrl", "paymentIntentId"
+
+
+3. TEST QR CODE:
+   - Open the qrCodeUrl in browser
+   - Should display QR code image
+   - Scan with PIX-enabled banking app to verify
+
+
+================================================================================
+                              IMPORTANT NOTES
+================================================================================
+
+✓ YOUR CODE IS CORRECT
+  - API Version: 2024-11-20.acacia (correct)
+  - Stripe SDK: 19.2.0 (correct)
+  - Payment method: 'pix' (correct)
+  - Currency: BRL (correct)
+  - NO CODE CHANGES NEEDED
+
+✗ ONLY ISSUE
+  - PIX capability not enabled on account
+
+FIX TIME
+  - Dashboard: Immediate (2 minutes)
+  - API request: 24-48 hours
+
+WORKAROUND
+  - Use demo mode while waiting:
+    Set: USE_DEMO_PIX=true in environment
+    Returns fake but valid PIX codes for testing UI
+
+================================================================================
+                            TROUBLESHOOTING
+================================================================================
+
+If still getting error after enabling:
+
+1. CLEAR CACHE:
+   - Restart your server
+   - Clear any API caches
+
+2. VERIFY DASHBOARD:
+   - Go to https://dashboard.stripe.com
+   - Settings > Payment methods
+   - Look for Pix status
+
+3. DOUBLE-CHECK:
+   - curl http://localhost:3000/api/check-pix-capability
+   - Should show: "canCreatePixPayments": true
+
+4. WAIT:
+   - If just requested via API, wait 24-48 hours
+   - Check email for Stripe notifications
+
+5. CONTACT STRIPE:
+   - If still not working after 48 hours
+   - Visit: https://support.stripe.com/
+
+================================================================================
+                              FILE LOCATIONS
+================================================================================
+
+Main Implementation:
+  /Users/lech/PROJECTS_all/PROJECT_merch/AI-PROVIDERS/llm-merch-store/
+  └── app/api/create-pix-payment/route.ts
+
+New Diagnostic Endpoints:
+  ├── app/api/check-pix-capability/route.ts (GET - check status)
+  └── app/api/enable-pix-capability/route.ts (POST - request capability)
+
+Documentation:
+  ├── PIX_DIAGNOSIS_SUMMARY.md (executive summary)
+  ├── PIX_TROUBLESHOOTING.md (comprehensive guide)
+  └── PIX_QUICK_FIX.txt (this file)
+
+================================================================================
+                              ENVIRONMENT VARS
+================================================================================
+
+Required in Vercel (or .env.local for local development):
+
+  STRIPE_SECRET_KEY=sk_test_xxxxx_or_sk_live_xxxxx
+  NEXT_PUBLIC_URL=https://yourdomain.com
+
+Optional:
+  USE_DEMO_PIX=true  # Force demo mode (for testing before PIX enabled)
+
+Currently: Set in Vercel (not in .env.local)
+
+================================================================================
+                              API ENDPOINTS
+================================================================================
+
+GET /api/check-pix-capability
+  Purpose: Check if PIX is enabled and get status
+  Response: { canCreatePixPayments, pixPaymentCapability, nextSteps }
+
+POST /api/enable-pix-capability
+  Purpose: Programmatically request PIX capability
+  Response: { success, capability, timeline, nextSteps }
+
+POST /api/create-pix-payment
+  Purpose: Create a PIX payment intent
+  Body: { amount, productId, productName }
+  Response: { pixCode, qrCodeUrl, expiresAt, paymentIntentId }
+
+POST /api/check-payment
+  Purpose: Check payment status
+  Body: { paymentIntentId }
+  Response: { status, amount_received, metadata }
+
+================================================================================
+                              EXPECTED TIMELINE
+================================================================================
+
+Now:              Request capability (choose method above)
+Minutes:          Dashboard method usually auto-approved
+24-48 hours:      API method under manual review
+After approval:   PIX payments fully operational
+
+================================================================================
+                            SUPPORT RESOURCES
+================================================================================
+
+Stripe Dashboard: https://dashboard.stripe.com
+Stripe Support: https://support.stripe.com/
+PIX Docs: https://docs.stripe.com/payments/pix
+API Docs: https://docs.stripe.com/api/payment_intents
+
+================================================================================
+
+Quick Summary:
+1. Enable PIX via Dashboard (2 min) OR API (24-48 hrs)
+2. Verify: curl http://localhost:3000/api/check-pix-capability
+3. Test: curl -X POST http://localhost:3000/api/create-pix-payment ...
+4. Done!
+
+Your code is ready. Account just needs PIX enabled.
+
+================================================================================
