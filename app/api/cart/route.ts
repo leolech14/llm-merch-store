@@ -189,7 +189,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       items,
       createdAt: now,
       updatedAt: now,
-      totalItems: items.length
+      totalItems: items.reduce((sum, item) => sum + (item.quantity || 1), 0)
     };
 
     // Save to Vercel KV with TTL

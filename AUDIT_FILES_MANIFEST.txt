@@ -1,0 +1,339 @@
+================================================================================
+API AUDIT DOCUMENTATION - FILE MANIFEST
+================================================================================
+
+Generated: 2025-11-01
+Status: AUDIT COMPLETE - Ready for Implementation
+
+================================================================================
+GENERATED DOCUMENTS
+================================================================================
+
+1. AUDIT_README.md (3 KB)
+   - Entry point for all audit documentation
+   - How to use each document
+   - Quick start guides for different roles
+   - FAQ and common issues
+   START HERE
+
+2. API_AUDIT_SUMMARY.md (8 KB)
+   - Quick reference guide
+   - Status overview and tables
+   - Best practices from good routes
+   - Critical issues highlighted
+   - Effort estimates
+   BEST FOR: Stakeholder communication
+
+3. API_AUDIT_REPORT.md (33 KB)
+   - Comprehensive detailed audit
+   - Analysis of all 18 routes
+   - Cross-cutting issues
+   - Security concerns
+   - Recommendations for each route
+   BEST FOR: Technical deep-dive
+
+4. FIX_IMPLEMENTATIONS.md (25 KB)
+   - Complete code examples
+   - Helper libraries to create
+   - Fixed route examples
+   - Installation instructions
+   - Copy-paste ready code
+   BEST FOR: Implementation guidance
+
+5. PRODUCTION_CHECKLIST.md (11 KB)
+   - Pre-deployment verification
+   - Functional testing checklist
+   - Load testing requirements
+   - Security audit checklist
+   - Post-deployment procedures
+   BEST FOR: Quality gate before production
+
+6. This File (AUDIT_FILES_MANIFEST.txt)
+
+================================================================================
+TOTAL AUDIT CONTENT: ~80 KB
+================================================================================
+
+Total Routes Audited: 18
+Status:
+  - Complete (OK).................. 5 routes
+  - Needs Work (⚠️)................. 13 routes
+  
+Critical Issues: 8
+High Priority: 14
+Medium Priority: 40
+
+================================================================================
+HOW TO USE THIS AUDIT
+================================================================================
+
+STEP 1: READ (15 mins)
+- Start with: AUDIT_README.md
+- Then: API_AUDIT_SUMMARY.md
+- Understand: Priority matrix and status
+
+STEP 2: UNDERSTAND (1 hour)
+- Review: Routes that affect you
+- Check: API_AUDIT_REPORT.md for details
+- Note: Specific issues in your routes
+
+STEP 3: PLAN (30 mins)
+- Reference: PRODUCTION_CHECKLIST.md
+- Estimate: Time for fixes
+- Schedule: Implementation sprint
+
+STEP 4: IMPLEMENT (25-30 hours total)
+- Phase 1 (Critical): 6-8 hours
+- Phase 2 (High): 4-6 hours
+- Phase 3 (Medium): 4-8 hours
+- Testing: 5+ hours
+
+STEP 5: VERIFY (ongoing)
+- Check: PRODUCTION_CHECKLIST.md
+- Test: All items before deploy
+- Sign-off: Required before production
+
+================================================================================
+KEY FINDINGS SUMMARY
+================================================================================
+
+TOP 5 CRITICAL ISSUES:
+1. File I/O Race Conditions (6 routes affected)
+   - Risk: Data corruption under load
+   - Fix: Use file locking (20 mins per route)
+
+2. Missing Rate Limiting (10+ endpoints)
+   - Risk: DOS attacks, cost explosion on LLM
+   - Fix: Implement Upstash Redis (2-3 hours)
+
+3. Missing Input Validation
+   - Risk: Data integrity, security issues
+   - Fix: Create validation framework (3-4 hours)
+
+4. Hardcoded Configuration
+   - Risk: Can't change settings without code deploy
+   - Fix: Move to environment variables (1 hour)
+
+5. Missing Authorization Checks
+   - Risk: Users can modify others' data/admin features
+   - Fix: Add session checks (2-3 hours)
+
+================================================================================
+ROUTES STATUS OVERVIEW
+================================================================================
+
+COMPLETE (5) - These patterns should be copied to other routes:
+  ✅ /api/cart/route.ts
+  ✅ /api/webhook/pix-payment/route.ts
+  ✅ /api/ask/route.ts
+  ✅ /api/metrics/route.ts
+  ✅ /api/sale-status/route.ts
+
+NEEDS WORK (13) - Priority fixes required:
+
+CRITICAL (8):
+  ❌ /api/pix-payment - Missing amount validation
+  ❌ /api/telemetry - Race condition, event validation
+  ❌ /api/inventory - Race condition
+  ❌ /api/visitors - Race condition
+  ❌ /api/offers - Race condition, no authorization
+  ❌ /api/admin/hero-config - Race condition
+  ❌ /api/admin/system-config - Race condition, config unsafe
+  ❌ /api/auth - Hardcoded admin emails
+
+HIGH (5):
+  ⚠️ /api/pix-payment-status - No rate limiting
+  ⚠️ /api/transactions - No validation
+  ⚠️ /api/events - No bounds on queries
+  ⚠️ /api/collectors - No validation
+  ⚠️ /api/market-prices - No caching
+
+MEDIUM (0 routes, but 40 medium-priority improvements)
+
+================================================================================
+HELPER LIBRARIES TO CREATE
+================================================================================
+
+Copy these files from FIX_IMPLEMENTATIONS.md and create in /lib/:
+
+1. /lib/file-lock.ts
+   - Atomic file operations with locking
+   - Used by all JSON file routes
+   - Already exists in webhook route - copy it
+
+2. /lib/validation.ts
+   - Reusable Validator class
+   - Email, amount, string, enum validators
+   - Used by all POST endpoints
+
+3. /lib/api-response.ts
+   - Standardized success/error responses
+   - Helper methods for 200, 400, 401, 403, 404, 429, 500
+   - Used by all routes
+
+4. /lib/rate-limit.ts
+   - Upstash rate limiting configuration
+   - Different limits for payment, telemetry, LLM
+   - Requires UPSTASH_REDIS env vars
+
+5. /lib/logger.ts
+   - Structured JSON logging
+   - Context passing with request IDs
+   - Works with Axiom/Logdrain
+
+6. /lib/env-validation.ts
+   - Startup environment validation
+   - Checks required and optional vars
+   - Warns about missing features
+
+================================================================================
+ENVIRONMENT VARIABLES NEEDED
+================================================================================
+
+REQUIRED (Already partially set):
+  EBANX_INTEGRATION_KEY - PIX payment
+  GOOGLE_CLIENT_ID - Google OAuth
+  GOOGLE_CLIENT_SECRET - Google OAuth
+  NEXTAUTH_SECRET - Session encryption
+
+REQUIRED FOR PRODUCTION:
+  UPSTASH_REDIS_REST_URL - Rate limiting
+  UPSTASH_REDIS_REST_TOKEN - Rate limiting
+  ADMIN_EMAILS - Move from hardcoded to env
+  EBANX_API_URL - Switch from sandbox
+  NEXTAUTH_URL - Set to production domain
+
+OPTIONAL BUT RECOMMENDED:
+  OPENAI_API_KEY or ANTHROPIC_API_KEY - LLM provider
+  SENTRY_DSN - Error tracking
+  AXIOM_TOKEN - Structured logging
+
+See .env.example for full reference.
+
+================================================================================
+IMPLEMENTATION CHECKLIST
+================================================================================
+
+PHASE 1 - CRITICAL (6-8 hours) - Must complete before production:
+  [ ] Create /lib/file-lock.ts
+  [ ] Update all JSON file routes with locking (6 routes)
+  [ ] Set up Upstash Redis
+  [ ] Add rate limiting to payment endpoints
+  [ ] Move admin emails to ADMIN_EMAILS env var
+  [ ] Move EBANX API URL to env var
+  [ ] Test under concurrent load (100+ users)
+
+PHASE 2 - HIGH PRIORITY (4-6 hours) - Should complete:
+  [ ] Create /lib/validation.ts
+  [ ] Create /lib/api-response.ts
+  [ ] Add validation to all POST endpoints
+  [ ] Add authorization checks to /api/offers PUT
+  [ ] Add authorization checks to /api/admin routes
+  [ ] Add timeout to EBANX fetch calls
+  [ ] Fix admin config unsafe type casting
+
+PHASE 3 - MEDIUM (4-8 hours) - Nice to have:
+  [ ] Create /lib/logger.ts
+  [ ] Create /lib/env-validation.ts
+  [ ] Add structured logging to all routes
+  [ ] Generate OpenAPI documentation
+  [ ] Add caching to stats endpoints
+  [ ] Optimize database queries
+
+TESTING:
+  [ ] Unit test validators
+  [ ] Integration test payment flow
+  [ ] Load test with 100+ concurrent users
+  [ ] Security audit of auth/admin endpoints
+  [ ] Run through PRODUCTION_CHECKLIST.md
+
+================================================================================
+DEPLOYMENT GATE
+================================================================================
+
+CANNOT DEPLOY UNTIL:
+
+1. All CRITICAL issues fixed and tested
+2. All items in PRODUCTION_CHECKLIST.md verified
+3. Load testing shows no race conditions
+4. Security audit passed
+5. All required team members signed off
+
+See PRODUCTION_CHECKLIST.md for formal sign-off section.
+
+================================================================================
+TIMELINE ESTIMATE
+================================================================================
+
+Total effort for production readiness: 25-30 hours
+
+Week 1 (Phase 1 - Critical):
+  Monday-Tuesday: File locking implementation (6-8 hours)
+  Wednesday: Rate limiting setup (3-4 hours)
+  Thursday: Testing under load (4 hours)
+  Friday: Fixes and verification (4 hours)
+
+Week 2 (Phase 2 - High Priority):
+  Monday-Tuesday: Validation framework (4-5 hours)
+  Wednesday: Authorization checks (3-4 hours)
+  Thursday-Friday: Testing and fixes (8 hours)
+
+Can deploy after Week 1 if absolutely necessary (with close monitoring).
+Safer to wait for Week 2 completion.
+
+================================================================================
+WHO READS WHAT
+================================================================================
+
+DEVELOPERS:
+  1. AUDIT_README.md (5 mins)
+  2. API_AUDIT_SUMMARY.md (10 mins)
+  3. FIX_IMPLEMENTATIONS.md (detail lookup)
+  4. Your specific route in API_AUDIT_REPORT.md
+
+TECH LEADS:
+  1. API_AUDIT_REPORT.md (30 mins)
+  2. PRODUCTION_CHECKLIST.md (15 mins)
+  3. Plan sprint using effort estimates
+
+DEVOPS/OPS:
+  1. PRODUCTION_CHECKLIST.md (focus on monitoring section)
+  2. FIX_IMPLEMENTATIONS.md (setup sections)
+  3. Plan infrastructure needed
+
+STAKEHOLDERS:
+  1. API_AUDIT_SUMMARY.md (status overview)
+  2. Timeline estimate above
+  3. PRODUCTION_CHECKLIST.md (gate criteria)
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Read AUDIT_README.md completely
+2. Distribute API_AUDIT_SUMMARY.md to stakeholders
+3. Schedule kick-off meeting to review findings
+4. Assign Phase 1 critical fixes to developers
+5. Set up Upstash Redis for rate limiting
+6. Begin implementation following checklist
+7. Test each fix before merging
+8. Complete PRODUCTION_CHECKLIST.md before deploy
+
+================================================================================
+CONTACT & QUESTIONS
+================================================================================
+
+For audit questions: Review the detailed reports
+For implementation help: Check FIX_IMPLEMENTATIONS.md for code examples
+For testing questions: See PRODUCTION_CHECKLIST.md test sections
+For deployment approval: Use PRODUCTION_CHECKLIST.md sign-off section
+
+================================================================================
+END OF MANIFEST
+================================================================================
+
+Generated: 2025-11-01
+Last Updated: 2025-11-01
+Status: AUDIT COMPLETE AND READY FOR IMPLEMENTATION
+
+All documents in: /Users/lech/PROJECTS_all/PROJECT_merch/AI-PROVIDERS/llm-merch-store/

@@ -169,6 +169,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    localStorage.removeItem('cart');
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -201,7 +202,7 @@ export function useCart() {
 
 function showToast(message: string) {
   const toast = document.createElement('div');
-  toast.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce';
+  toast.className = 'fixed bottom-4 right-4 bg-black text-white px-6 py-3 shadow-lg z-50 animate-bounce border-2 border-white';
   toast.textContent = message;
   document.body.appendChild(toast);
 

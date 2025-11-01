@@ -323,7 +323,7 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
                     </button>
                     <button
                       onClick={() => handleExplain('chatgpt')}
-                      className="flex-1 px-2 py-1.5 rounded-md bg-white/10 hover:bg-white/20 border border-white/20 text-[10px] font-mono text-white transition"
+                      className="flex-1 px-2 py-1.5  bg-white/10 hover:bg-white/20 border border-white/20 text-[10px] font-mono text-white transition"
                     >
                       GPT
                     </button>
@@ -332,13 +332,13 @@ export function ProductDetailModal({ isOpen, onClose, product }: ProductDetailMo
               ) : (
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                    <div className="w-1.5 h-1.5  bg-white animate-pulse"></div>
                     <p className="text-[10px] text-white/50 font-mono">
                       {aiProvider === 'claude' ? 'Claude' : 'GPT'}
                     </p>
                   </div>
                   {explanation && (
-                    <p className="text-[11px] text-white/90 leading-relaxed bg-black/10 p-2 rounded-md">
+                    <p className="text-[11px] text-white/90 leading-relaxed bg-black/10 p-2 ">
                       {explanation}
                     </p>
                   )}

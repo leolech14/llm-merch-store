@@ -1,0 +1,447 @@
+================================================================================
+                    API AUDIT - ROUTES STATUS SUMMARY
+================================================================================
+
+GENERATED: November 1, 2025
+AUDITED: 18 API Routes
+STATUS: Complete and Ready for Implementation
+
+================================================================================
+ROUTES BY STATUS
+================================================================================
+
+COMPLETE (5 Routes) ✅ - Copy these patterns to other routes:
+┌─────────────────────────────┬────────────────┐
+│ Route                       │ Key Strength   │
+├─────────────────────────────┼────────────────┤
+│ /api/cart                   │ Best practices │
+│ /api/webhook/pix-payment    │ File locking   │
+│ /api/ask                    │ Fallback mode  │
+│ /api/metrics                │ Clean code     │
+│ /api/sale-status            │ Simple & safe  │
+└─────────────────────────────┴────────────────┘
+
+NEEDS WORK (13 Routes) ⚠️
+
+CRITICAL (8 Routes) ❌ - MUST FIX BEFORE PRODUCTION:
+┌─────────────────────────────┬─────────────────────────────────┐
+│ Route                       │ Main Issues                     │
+├─────────────────────────────┼─────────────────────────────────┤
+│ /api/pix-payment            │ No validation, hardcoded config │
+│ /api/telemetry              │ Race condition, no validation   │
+│ /api/inventory              │ Race condition, no locking      │
+│ /api/visitors               │ Race condition in counter       │
+│ /api/offers                 │ Race condition, no auth         │
+│ /api/admin/hero-config      │ Race condition                  │
+│ /api/admin/system-config    │ Race condition, unsafe casting │
+│ /api/auth                   │ Hardcoded admin emails          │
+└─────────────────────────────┴─────────────────────────────────┘
+
+HIGH (5 Routes) ⚠️⚠️ - Should fix before production:
+┌─────────────────────────────┬─────────────────────────────────┐
+│ Route                       │ Issues                          │
+├─────────────────────────────┼─────────────────────────────────┤
+│ /api/pix-payment-status     │ No rate limiting                │
+│ /api/transactions           │ No validation                   │
+│ /api/events                 │ No bounds on queries            │
+│ /api/collectors             │ No validation                   │
+│ /api/market-prices          │ No caching                      │
+└─────────────────────────────┴─────────────────────────────────┘
+
+================================================================================
+ISSUE SEVERITY MATRIX
+================================================================================
+
+CRITICAL (Must Fix Before Production): 8 Issues
+├─ File I/O Race Conditions........... 6 routes affected
+│  Risk: Data corruption under load
+│  Time: 20 mins per route
+│
+├─ Hardcoded Configuration........... 2 routes affected
+│  Risk: Cannot change settings without code deploy
+│  Time: 1 hour
+│
+└─ Missing Authorization............. 1 route affected
+   Risk: Users access restricted features
+   Time: 30 mins
+
+HIGH (Should Fix): 14 Issues
+├─ Missing Rate Limiting............. 10+ endpoints
+│  Risk: DOS attacks, cost explosion
+│  Time: 2-3 hours total
+│
+├─ Missing Input Validation.......... 5 routes
+│  Risk: Data integrity, security issues
+│  Time: 3-4 hours total
+│
+└─ Missing Timeout Handling.......... 2 routes
+   Risk: Requests hang indefinitely
+   Time: 1 hour total
+
+MEDIUM (Nice to Have): 40 Issues
+├─ Missing Logging Strategy.......... Many routes
+│  Time: 3-5 hours total
+│
+├─ Missing Caching................... 3-4 routes
+│  Time: 2 hours total
+│
+├─ Missing Pagination............... 2 routes
+│  Time: 1 hour
+│
+└─ Code Quality Improvements........ All routes
+   Time: 8+ hours
+
+TOTAL ESTIMATED EFFORT: 25-30 hours
+
+================================================================================
+IMPLEMENTATION PHASES
+================================================================================
+
+PHASE 1: CRITICAL (6-8 hours) - MUST complete before production
+├─ File Locking.............. 6 routes × 20 mins = 2 hours
+├─ Rate Limiting............. 1 setup + tests = 3 hours
+├─ Move Config to Env........ Admin emails + EBANX URL = 1 hour
+└─ Load Testing.............. 100+ concurrent users = 2 hours
+
+PHASE 2: HIGH PRIORITY (4-6 hours) - Should complete
+├─ Validation Framework...... Create + apply to routes = 3 hours
+├─ Authorization Checks...... /api/offers PUT, admin = 2 hours
+└─ Error Handling............ Timeouts, logging = 1 hour
+
+PHASE 3: MEDIUM (4-8 hours) - Can do post-launch if needed
+├─ Structured Logging........ All routes = 3 hours
+├─ Caching................... Stats endpoints = 1 hour
+├─ API Documentation......... OpenAPI spec = 2 hours
+└─ Monitoring Setup.......... Sentry, dashboards = 2 hours
+
+================================================================================
+FILE I/O RACE CONDITION RISK
+================================================================================
+
+Affected Routes (6):
+  - /api/telemetry/route.ts
+  - /api/inventory/route.ts
+  - /api/visitors/route.ts
+  - /api/offers/route.ts
+  - /api/admin/hero-config/route.ts
+  - /api/admin/system-config/route.ts
+
+How it happens:
+  1. Request A reads inventory.json (has 10 items)
+  2. Request B reads inventory.json (has 10 items)
+  3. Request A updates to 9 items, writes file
+  4. Request B updates to 9 items, writes file
+  5. Both decrement, but file only shows 9 (should be 8)
+
+Solution:
+  - Use atomic file operations with locking
+  - Copy pattern from /api/webhook/pix-payment/route.ts
+  - Test with 100+ concurrent requests
+
+Impact if not fixed:
+  - Inventory counts become incorrect
+  - Offer data gets corrupted
+  - Telemetry data becomes unreliable
+  - Customer data loss possible
+
+================================================================================
+RATE LIMITING REQUIREMENTS
+================================================================================
+
+By Endpoint Type:
+
+General API (100 req/hour):
+  - /api/collectors
+  - /api/transactions GET
+  - /api/events GET
+  - /api/market-prices
+
+Strict Payment (30 req/hour):
+  - /api/pix-payment POST
+  - /api/pix-payment-status POST
+
+Telemetry (1000 req/hour):
+  - /api/telemetry POST
+  - /api/visitors POST
+
+LLM (60 req/hour) - CRITICAL (costs money!):
+  - /api/ask POST
+
+Setup required:
+  1. Sign up for Upstash Redis
+  2. Get UPSTASH_REDIS_REST_URL
+  3. Get UPSTASH_REDIS_REST_TOKEN
+  4. Install: npm install @upstash/ratelimit @upstash/redis
+  5. Apply to routes
+
+Without rate limiting risks:
+  - Thousands of spam requests
+  - LLM costs: $0.10-1.00 per request × unlimited = EXPENSIVE
+  - DOS attacks possible
+  - Service degradation
+
+================================================================================
+VALIDATION REQUIREMENTS
+================================================================================
+
+By Field Type:
+
+Amount/Price Fields (5+ routes):
+  - Must be number, finite, positive
+  - Bounds: 0.01 to 100,000 BRL
+  - Routes: pix-payment, transactions, offers, inventory
+
+Email Fields (3+ routes):
+  - Must match email pattern (has @, domain, TLD)
+  - Routes: pix-payment, offers, and others
+
+String Fields (All routes):
+  - Length bounds: 1-1000 chars (route-specific)
+  - No special characters (HTML escaping)
+  - Routes: everywhere (names, nicknames, descriptions)
+
+Event Type (telemetry):
+  - Whitelist: only known event types allowed
+  - Currently: page_view, visitor, product_click, product_like, add_to_cart, sale
+
+Query Parameters:
+  - Limit: must be 1-500 (not unlimited)
+  - Date: must be ISO 8601 format
+  - Routes: /api/events GET
+
+================================================================================
+AUTHENTICATION/AUTHORIZATION GAPS
+================================================================================
+
+Missing Auth:
+  - /api/offers PUT: No ownership check (anyone can accept/reject)
+  - /api/admin/system-config GET: Public but shows configuration (intentional?)
+  - /api/visitors POST: Public counter can be spammed
+
+Hardcoded Admin Emails:
+  - /api/auth route: Leonardo's email in source code
+  - Cannot change admins without code deploy
+  - Solution: Use ADMIN_EMAILS env var
+
+Missing Session Checks:
+  - Some routes assume getServerSession always works
+  - Should handle null session gracefully
+
+================================================================================
+HELPER LIBRARIES TO CREATE
+================================================================================
+
+1. /lib/file-lock.ts (already have pattern in webhook)
+   Lines: ~105
+   Purpose: Atomic file operations
+   Usage: 6 routes
+
+2. /lib/validation.ts (need to create)
+   Lines: ~150
+   Methods: validateAmount, validateEmail, validateString, validateEnum
+   Usage: 10+ routes
+
+3. /lib/api-response.ts (need to create)
+   Lines: ~80
+   Methods: ok, created, badRequest, unauthorized, forbidden, notFound, rateLimit, internalError
+   Usage: All routes
+
+4. /lib/rate-limit.ts (need to create)
+   Lines: ~80
+   Config: General, Payment, Telemetry, LLM limiters
+   Usage: All POST endpoints
+
+5. /lib/logger.ts (need to create)
+   Lines: ~120
+   Features: Structured logging with request ID
+   Usage: All routes
+
+6. /lib/env-validation.ts (need to create)
+   Lines: ~100
+   Purpose: Startup validation
+   Usage: app initialization
+
+Total new code: ~635 lines (relatively small)
+
+================================================================================
+ENVIRONMENT VARIABLES CHECKLIST
+================================================================================
+
+REQUIRED:
+  ✓ EBANX_INTEGRATION_KEY - ✓ Already in .env.local
+  ✓ GOOGLE_CLIENT_ID - ✓ Already in .env.example
+  ✓ GOOGLE_CLIENT_SECRET - ✓ Already in .env.example
+  ✓ NEXTAUTH_SECRET - ✓ Already in .env.example
+  
+ADD FOR PRODUCTION:
+  ☐ UPSTASH_REDIS_REST_URL - For rate limiting
+  ☐ UPSTASH_REDIS_REST_TOKEN - For rate limiting
+  ☐ ADMIN_EMAILS - Move from hardcoded
+  ☐ EBANX_API_URL - Switch from hardcoded sandbox
+  ☐ NEXTAUTH_URL - Set to production domain
+
+OPTIONAL BUT RECOMMENDED:
+  ☐ OPENAI_API_KEY - For /api/ask (or ANTHROPIC_API_KEY)
+  ☐ SENTRY_DSN - Error tracking
+  ☐ AXIOM_TOKEN - Structured logging
+
+Total: 12 environment variables for full production setup
+
+================================================================================
+TESTING REQUIREMENTS
+================================================================================
+
+UNIT TESTS:
+  - Validator.validateAmount() 
+  - Validator.validateEmail()
+  - Rate limit configuration
+  - File locking behavior
+
+INTEGRATION TESTS:
+  - Full payment flow: create → poll → webhook
+  - Cart operations: create, get, update, delete
+  - Offer lifecycle: create, list, accept, reject
+  - Admin operations: config get/set
+
+LOAD TESTS (CRITICAL):
+  - 100 concurrent payment creations
+  - 100 concurrent inventory updates
+  - 1000 telemetry events in 1 second
+  - Verify no data corruption
+  - Monitor for lock timeouts
+  - Check for memory leaks
+
+SECURITY TESTS:
+  - Negative amounts
+  - Invalid emails
+  - XSS in descriptions
+  - SQL injection (if using DB later)
+  - Authorization bypass attempts
+  - Rate limit evasion
+
+PERFORMANCE BENCHMARKS:
+  Target: p95 latency < 500ms
+  - Payment creation: < 300ms
+  - Status check: < 200ms
+  - Cart operations: < 100ms
+  - Get inventory: < 100ms
+
+================================================================================
+DEPLOYMENT GATE CHECKLIST
+================================================================================
+
+CANNOT DEPLOY IF:
+  ❌ Any CRITICAL issues unfixed
+  ❌ Race condition tests fail
+  ❌ Load test shows data corruption
+  ❌ Security audit not passed
+  ❌ Any HIGH issues with payments/auth unfixed
+  ❌ Required team members not signed off
+
+CAN DEPLOY IF:
+  ✅ All CRITICAL issues fixed and tested
+  ✅ Load tests pass with 100+ users
+  ✅ No race conditions detected
+  ✅ Security audit passed
+  ✅ Error rate < 0.1% in staging
+  ✅ Tech lead signed off
+  ✅ Security lead signed off
+  ✅ DevOps lead signed off
+
+================================================================================
+RISK SUMMARY BY ROUTE
+================================================================================
+
+HIGHEST RISK (Could lose customer data):
+  1. /api/webhook/pix-payment - Race condition on inventory
+  2. /api/offers - Race condition on offer acceptance
+  3. /api/inventory - Race condition on stock
+
+PAYMENT RISKS (Money-related):
+  1. /api/pix-payment - No amount validation → wrong charge
+  2. /api/pix-payment-status - DOS possible → timeout
+  3. /api/admin/system-config - Unsafe config change
+
+SECURITY RISKS (Unauthorized access):
+  1. /api/offers - Anyone can accept/reject offers
+  2. /api/admin routes - Should require authentication
+  3. /api/auth - Hardcoded admin emails
+
+COST RISKS (Hidden expenses):
+  1. /api/ask - Unlimited LLM calls = expensive
+  2. /api/telemetry - Unlimited spam events
+  3. /api/visitors - Unlimited counter increments
+
+================================================================================
+QUICK WINS (Implement First)
+================================================================================
+
+HIGH IMPACT, LOW EFFORT (< 30 mins):
+
+1. Move admin emails to env variable
+   File: /api/auth/[...nextauth]/route.ts
+   Change: Read from ADMIN_EMAILS env var
+   Impact: Can change admins without code deploy
+
+2. Add simple event type validation
+   File: /api/telemetry/route.ts
+   Change: Whitelist known event types
+   Impact: Prevents random event spam
+
+3. Add amount bounds validation
+   File: /api/pix-payment/route.ts
+   Change: Check 0.01 < amount < 100,000
+   Impact: Prevents invalid charges
+
+4. Move EBANX sandbox URL to env
+   File: /api/pix-payment/route.ts
+   Change: Use EBANX_API_URL env var
+   Impact: Can switch to production without code deploy
+
+5. Add timeout to LLM calls
+   File: /api/ask/route.ts
+   Change: 30-second timeout on fetch
+   Impact: Prevents hanging requests
+
+These 5 quick wins prevent major issues with minimal code changes.
+
+================================================================================
+TIMELINE: WHEN CAN WE DEPLOY?
+================================================================================
+
+Week 1:
+  Mon-Tue: File locking implementation (6-8h)
+  Wed: Rate limiting setup (3-4h)
+  Thu: Testing and verification (4h)
+  Fri: Buffer/fixes (4h)
+  Status: CRITICAL items DONE
+  
+  ⚠️ Could deploy but risky without Phase 2
+
+Week 2:
+  Mon-Tue: Validation framework (4-5h)
+  Wed: Authorization checks (2-3h)
+  Thu-Fri: Testing and fixes (6-8h)
+  Status: HIGH items DONE
+  
+  ✅ SAFE TO DEPLOY after completion
+
+Week 3+:
+  Phase 3: Medium items (nice-to-have)
+  Status: Polish and optimization
+  
+  ✅✅ FULL CONFIDENCE
+
+Realistic timeline: 2 weeks for safe production deployment
+Minimum viable: 1 week (with close monitoring and quick rollback)
+
+================================================================================
+                             END OF SUMMARY
+================================================================================
+
+Start with: AUDIT_README.md
+Details: API_AUDIT_REPORT.md
+Implementation: FIX_IMPLEMENTATIONS.md
+Verification: PRODUCTION_CHECKLIST.md
+
+Status: ALL DOCUMENTATION COMPLETE - READY FOR IMPLEMENTATION

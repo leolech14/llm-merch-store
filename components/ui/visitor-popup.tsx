@@ -39,6 +39,7 @@ export function VisitorPopup({ isOpen, onClose, visitorCount }: VisitorPopupProp
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+          onClick={onClose}
         >
           {/* Backdrop */}
           <motion.div
@@ -57,6 +58,7 @@ export function VisitorPopup({ isOpen, onClose, visitorCount }: VisitorPopupProp
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15, ease: [0.2, 0, 0.8, 1] }}
             style={{ position: 'relative', zIndex: 10 }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Icon - Smaller */}
             <motion.div

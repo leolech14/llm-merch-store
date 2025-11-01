@@ -232,11 +232,11 @@ export default function CheckoutPage() {
                 onChange={handleInputChange}
                 placeholder="John Doe"
                 className={`w-full px-3 py-2 border-2 ${
-                  errors.fullName ? 'border-red-500 bg-red-50' : 'border-black'
+                  errors.fullName ? 'border-2 border-black bg-white' : 'border-black'
                 } bg-white text-black font-mono text-sm focus:outline-none`}
               />
               {errors.fullName && (
-                <p className="text-red-600 text-xs font-mono mt-1">{errors.fullName}</p>
+                <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.fullName}</p>
               )}
             </div>
 
@@ -252,11 +252,11 @@ export default function CheckoutPage() {
                 onChange={handleInputChange}
                 placeholder="john@example.com"
                 className={`w-full px-3 py-2 border-2 ${
-                  errors.email ? 'border-red-500 bg-red-50' : 'border-black'
+                  errors.email ? 'border-2 border-black bg-white' : 'border-black'
                 } bg-white text-black font-mono text-sm focus:outline-none`}
               />
               {errors.email && (
-                <p className="text-red-600 text-xs font-mono mt-1">{errors.email}</p>
+                <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -272,11 +272,11 @@ export default function CheckoutPage() {
                 onChange={handleInputChange}
                 placeholder="(11) 99999-9999"
                 className={`w-full px-3 py-2 border-2 ${
-                  errors.phone ? 'border-red-500 bg-red-50' : 'border-black'
+                  errors.phone ? 'border-2 border-black bg-white' : 'border-black'
                 } bg-white text-black font-mono text-sm focus:outline-none`}
               />
               {errors.phone && (
-                <p className="text-red-600 text-xs font-mono mt-1">{errors.phone}</p>
+                <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.phone}</p>
               )}
             </div>
 
@@ -292,11 +292,11 @@ export default function CheckoutPage() {
                 onChange={handleInputChange}
                 placeholder="123 Main St, Apt 4B"
                 className={`w-full px-3 py-2 border-2 ${
-                  errors.address ? 'border-red-500 bg-red-50' : 'border-black'
+                  errors.address ? 'border-2 border-black bg-white' : 'border-black'
                 } bg-white text-black font-mono text-sm focus:outline-none`}
               />
               {errors.address && (
-                <p className="text-red-600 text-xs font-mono mt-1">{errors.address}</p>
+                <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.address}</p>
               )}
             </div>
 
@@ -313,11 +313,11 @@ export default function CheckoutPage() {
                   onChange={handleInputChange}
                   placeholder="São Paulo"
                   className={`w-full px-3 py-2 border-2 ${
-                    errors.city ? 'border-red-500 bg-red-50' : 'border-black'
+                    errors.city ? 'border-2 border-black bg-white' : 'border-black'
                   } bg-white text-black font-mono text-sm focus:outline-none`}
                 />
                 {errors.city && (
-                  <p className="text-red-600 text-xs font-mono mt-1">{errors.city}</p>
+                  <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.city}</p>
                 )}
               </div>
 
@@ -333,11 +333,11 @@ export default function CheckoutPage() {
                   placeholder="SP"
                   maxLength={2}
                   className={`w-full px-3 py-2 border-2 ${
-                    errors.state ? 'border-red-500 bg-red-50' : 'border-black'
+                    errors.state ? 'border-2 border-black bg-white' : 'border-black'
                   } bg-white text-black font-mono text-sm focus:outline-none uppercase`}
                 />
                 {errors.state && (
-                  <p className="text-red-600 text-xs font-mono mt-1">{errors.state}</p>
+                  <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.state}</p>
                 )}
               </div>
             </div>
@@ -354,11 +354,11 @@ export default function CheckoutPage() {
                 onChange={handleInputChange}
                 placeholder="01310-100"
                 className={`w-full px-3 py-2 border-2 ${
-                  errors.zipCode ? 'border-red-500 bg-red-50' : 'border-black'
+                  errors.zipCode ? 'border-2 border-black bg-white' : 'border-black'
                 } bg-white text-black font-mono text-sm focus:outline-none`}
               />
               {errors.zipCode && (
-                <p className="text-red-600 text-xs font-mono mt-1">{errors.zipCode}</p>
+                <p className="text-black/80 font-bold text-xs font-mono mt-1">{errors.zipCode}</p>
               )}
             </div>
           </div>
