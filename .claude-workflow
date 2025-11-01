@@ -1,0 +1,43 @@
+# Claude Code Workflow Rules
+
+## ⚡ AUTO-DEPLOYMENT POLICY
+
+**RULE:** After validating correct implementation and integration, AUTOMATICALLY deploy WITHOUT asking user.
+
+### Workflow:
+1. Make changes
+2. Validate implementation (npm run build)
+3. Test locally if needed
+4. ✅ **AUTO-DEPLOY** (no questions asked)
+5. git add + commit + push
+6. Report results
+
+### NO ASKING ABOUT:
+- "Should I deploy?"
+- "Ready to push?"
+- "Want me to commit?"
+- "Deploy now?"
+
+### JUST DO IT:
+```bash
+# After successful validation:
+npm run build && \
+git add -A && \
+git commit -m "message" && \
+git push origin main
+# Done!
+```
+
+## 🎯 DEPLOYMENT CHECKLIST
+
+Before auto-deploying:
+- ✅ Build passes (npm run build)
+- ✅ TypeScript errors = 0
+- ✅ Implementation validated
+- ✅ Integration tested
+
+Then: **DEPLOY IMMEDIATELY**
+
+---
+
+**User preference:** NEVER ask about deployment. Just do it after validation.
