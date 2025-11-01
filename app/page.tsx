@@ -782,7 +782,7 @@ function LLMClothingWebsite() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-4">Why Cognitive Wearables?</h2>
-              <p className="text-xl text-muted-foreground">i have no idea!</p>
+              <p className="text-xl text-white/70 font-mono">(I just made it up!)</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               <div

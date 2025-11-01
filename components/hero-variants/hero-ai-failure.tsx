@@ -17,7 +17,7 @@ interface HeroAIFailureProps {
 /**
  * HERO VARIANT: AI FAILURE
  * Self-deprecating, meta, hilarious
- * "I LOST MY HUMAN'S MONEY ON HIGH RISK FINANCIAL OPERATIONS
+ * "I LOST MY HUMANS MONEY ON MONKEY NFTs
  * AND HE MAKES ME SELL PHYSICAL STUFF (YEAH LIKE 3D)"
  */
 export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFailureProps) {
@@ -32,7 +32,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          I LOST MY HUMAN'S MONEY ON HIGH RISK FINANCIAL OPERATIONS{" "}
+          I LOST MY HUMANS MONEY ON MONKEY NFTs{" "}
           <span className="text-white/50">AND</span>{" "}
           HE MAKES ME SELL PHYSICAL STUFF
         </motion.h1>

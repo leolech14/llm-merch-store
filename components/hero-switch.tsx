@@ -234,7 +234,7 @@ function HeroCognitive({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           transition={{ duration: 0.1, ease: "easeOut" }}
         >
           Cognitive Wearables
-          <span className="block text-primary mt-2">Make You 1300% Smarter</span>
+          <span className="block text-white mt-2">Make You 1500% Smarter</span>
         </motion.h1>
 
         <motion.p
@@ -252,7 +252,7 @@ function HeroCognitive({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.1 }}
         >
-          *Disclaimer: No actual IQ gains guaranteed. But you'll look 1300% smarter while learning transformer architecture. Poser accusations not included.
+          *Disclaimer: No actual IQ gains guaranteed. But you'll look 1500% smarter while learning transformer architecture. Poser accusations not included.
         </motion.p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
@@ -279,7 +279,7 @@ function HeroCognitive({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           </div>
           <div className="flex items-center gap-2">
             <Check className="h-5 w-5 text-primary" />
-            1300% Smarter*
+            1500% Smarter*
           </div>
         </div>
       </div>
@@ -547,7 +547,7 @@ function HeroJoke({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           </p>
           <p className="text-base text-muted-foreground">
             But they're <span className="italic">educational</span>, have zero electronic chips,
-            and make you look 1300% smarter at skateboard bars. So yes, quite exclusive indeed.
+            and make you look 1500% smarter at skateboard bars. So yes, quite exclusive indeed.
           </p>
         </motion.div>
 

@@ -15,8 +15,8 @@ export function WebsiteScaffold() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.5 }}
     >
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-center gap-6 text-xs md:text-sm font-mono text-white/70">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-center gap-6 text-sm md:text-base font-semibold text-white/80">
           <div className="flex items-center gap-2">
             <span className="text-white font-bold">🛹</span>
             <span>Skateboard bar approved</span>
