@@ -492,12 +492,12 @@ function LLMClothingWebsite() {
         // Pre-fetch top 5 product images (for instant display)
         if (statsData.topProducts && statsData.topProducts.length > 0) {
           const topProductNames = statsData.topProducts.slice(0, 5).map((p: { name: string; clicks: number }) => p.name);
-          const topImages = products
-            .filter(p => topProductNames.includes(p.name))
-            .flatMap(p => p.images);
+          const topImages = allProducts
+            .filter((p: any) => topProductNames.includes(p.name))
+            .flatMap((p: any) => p.images);
 
           // Pre-load images
-          topImages.forEach(src => {
+          topImages.forEach((src: string) => {
             const img = new Image();
             img.src = src;
           });
@@ -541,39 +541,27 @@ function LLMClothingWebsite() {
     { name: "Contact", href: "#contact" },
   ];
 
-  const basePrice = 149;
-  const allProducts = [
-    { name: "Ask Anything Tee", description: "Voice-activated AI vibes", price: basePrice, images: ["/Ask-Anything-Chest.png"], isNew: true, category: "Interactive", tags: ["voice", "ai", "chatgpt"] },
-    { name: "ChatGPT PRO Ask", description: "Pro-level interaction", price: basePrice, images: ["/ChatGPT-PRO-Ask.png"], isNew: true, category: "Interactive", tags: ["chatgpt", "pro", "voice"] },
-    { name: "Mic Icon Tee", description: "Minimal microphone", price: basePrice, images: ["/Mic-Small.png"], category: "Interactive", tags: ["minimalist", "voice", "subtle"] },
-    { name: "Back-Propagation (Blue)", description: "Training flow viz", price: basePrice, images: ["/Back-Propagation-Blue.png"], isBestSeller: true, category: "Neural Networks", tags: ["deep-learning", "training", "technical"] },
-    { name: "Back-Propagation (Red)", description: "Red gradient flow", price: basePrice, images: ["/Back-Propagation-Red.png"], isBestSeller: true, category: "Neural Networks", tags: ["deep-learning", "training", "gradient"] },
-    { name: "Cross-Attention Tee", description: "Encoder-decoder links", price: basePrice, images: ["/Cross-Attention-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "attention", "architecture"] },
-    { name: "Self-Attention Tee", description: "Core mechanism", price: basePrice, images: ["/Self-Attention.png"], category: "Attention Mechanisms", tags: ["transformer", "attention", "graph"] },
-    { name: "Query-Key Matrix", description: "Attention values", price: basePrice, images: ["/Query-Key-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "matrix", "math"] },
-    { name: "Value Matrix Tee", description: "QKV trinity complete", price: basePrice, images: ["/Value-Chest.png"], category: "Attention Mechanisms", tags: ["transformer", "matrix", "QKV"] },
-    { name: "Transformer Architecture", description: "Full diagram", price: basePrice, images: ["/Transformer-Chest.png"], isBestSeller: true, category: "Architecture", tags: ["transformer", "technical", "detailed"] },
-    { name: "Fluffy Creature Layers", description: "Adorable layers", price: basePrice, images: ["/Fluffy-Creature-lvls.png"], isBestSeller: true, category: "Fun & Mascots", tags: ["cute", "layers", "mascot"] },
-    { name: "Fluffy Creature Y", description: "Cute mascot", price: basePrice, images: ["/Fluffy-Creature-Y.png"], category: "Fun & Mascots", tags: ["cute", "mascot", "fun"] },
-    { name: "LLM Brunette (Color)", description: "Surfing the wave", price: basePrice, images: ["/LLM-Brunnette.png"], isBestSeller: true, category: "Statement Pieces", tags: ["llm", "artistic", "bold"] },
-    { name: "LLM Brunette (B&W)", description: "Monochrome surfer", price: basePrice, images: ["/LLM-Brunnette-B&W.png"], category: "Statement Pieces", tags: ["llm", "monochrome", "artistic"] },
-    { name: "LLM Brunette (B&W-50)", description: "Half-tone edition", price: basePrice, images: ["/LLM-Brunnette-B&W-50.png"], category: "Statement Pieces", tags: ["llm", "halftone", "limited"] },
-    { name: "LLM Blonde (Color)", description: "Golden wave", price: basePrice, images: ["/LLM-Blonde.png"], isBestSeller: true, category: "Statement Pieces", tags: ["llm", "bold", "vibrant"] },
-    { name: "LLM Blonde (B&W)", description: "Classic blonde", price: basePrice, images: ["/LLM-Blonde-B&W.png"], category: "Statement Pieces", tags: ["llm", "monochrome", "classic"] },
-    { name: "Fresh Models Tee", description: "The perfect AI joke", price: basePrice, images: ["/Fresh-Models.png"], isNew: true, isBestSeller: true, category: "Statement Pieces", tags: ["humor", "llm", "witty"] },
-    { name: "Gossip Network", description: "Info spreading", price: basePrice, images: ["/-gossip-.png"], category: "Information Theory", tags: ["network", "graph", "minimalist"] },
-    { name: "Information Theory", description: "Network graph", price: basePrice, images: ["/Information-Theory.png"], isNew: true, category: "Information Theory", tags: ["network", "theory", "math"] },
-    { name: "Circular Node Graph", description: "Full circle viz", price: basePrice, images: ["/Circular-Node-Graph.png"], category: "Information Theory", tags: ["circular", "nodes", "viz"] },
-    { name: "Circular Graph (Small)", description: "Subtle chest", price: basePrice, images: ["/Circula-Node-Graph-Small.png"], category: "Information Theory", tags: ["minimal", "circular", "subtle"] },
-    { name: "Data Cloud Cube", description: "3D data space", price: basePrice, images: ["/Data-Cloud-Cube-Brown.png"], category: "Data Science", tags: ["3d", "data", "abstract"] },
-    { name: "Paris is a City", description: "Embeddings", price: basePrice, images: ["/Paris-Is-A-City.png"], isNew: true, category: "Embeddings & Tokens", tags: ["embeddings", "nlp", "context"] },
-    { name: "Tunable Parameters", description: "Hyperparameter dials", price: basePrice, images: ["/Turnable-Params.png"], category: "Model Training", tags: ["tuning", "parameters", "training"] },
-    { name: "LLM Brunette Alt", description: "Alternative surfing pose", price: basePrice, images: ["/LLM-Brunnette-0.png"], category: "Statement Pieces", tags: ["llm", "artistic", "variant"] },
-    { name: "Ask Anything Pro", description: "Premium voice edition", price: basePrice + 20, images: ["/Ask-Anything-Chest.png"], category: "Interactive", tags: ["voice", "premium", "ai"] },
-    { name: "Transformer Mini", description: "Compact architecture", price: basePrice - 10, images: ["/Transformer-Chest.png"], category: "Architecture", tags: ["transformer", "compact", "minimal"] },
-    { name: "Neural Flow Combo", description: "Back-prop dual color", price: basePrice + 30, images: ["/Back-Propagation-Blue.png", "/Back-Propagation-Red.png"], category: "Neural Networks", tags: ["gradient", "combo", "premium"] },
-    { name: "Fluffy Stack Bundle", description: "Both fluffy designs", price: basePrice + 30, images: ["/Fluffy-Creature-lvls.png", "/Fluffy-Creature-Y.png"], category: "Fun & Mascots", tags: ["cute", "bundle", "collector"] },
-  ];
+  // Load products from product catalog JSON
+  const allProducts = React.useMemo(() => {
+    // Import product catalog
+    const productCatalog = require('@/data/product-catalog.json');
+
+    // Map catalog products to component format
+    return productCatalog.products.map((p: any) => ({
+      name: p.name,
+      description: p.tagline,
+      price: p.price,
+      images: p.images.map((img: string) => `/images/${img}`),
+      category: p.category,
+      tags: p.tags,
+      isNew: false,
+      isBestSeller: p.featured || false,
+      hasFrontBack: p.hasFrontBack || false,
+      placement: p.placement,
+      sizes: p.sizes,
+      id: p.id
+    }));
+  }, []);
 
   // Reorganize products: Top 5 most clicked first, then rest
   const products = React.useMemo(() => {
@@ -581,13 +569,13 @@ function LLMClothingWebsite() {
       return allProducts;
     }
 
-    const topProductNames = stats.topProducts.slice(0, 5).map((p) => p.name);
-    const topProducts = allProducts.filter(p => topProductNames.includes(p.name));
-    const otherProducts = allProducts.filter(p => !topProductNames.includes(p.name));
+    const topProductNames = stats.topProducts.slice(0, 5).map((p: any) => p.name);
+    const topProducts = allProducts.filter((p: any) => topProductNames.includes(p.name));
+    const otherProducts = allProducts.filter((p: any) => !topProductNames.includes(p.name));
 
     // Top products first (sorted by clicks), then others
     return [...topProducts, ...otherProducts];
-  }, [stats.topProducts]);
+  }, [stats.topProducts, allProducts]);
 
   const testimonials = [
     {
@@ -955,7 +943,7 @@ function LLMClothingWebsite() {
               <p className="text-xl text-muted-foreground">Limited edition designs for Halloween and beyond</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {products.map((product, index) => {
+              {products.map((product: any, index: number) => {
                 const productKey = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                 const isSold = inventory?.products?.[productKey]?.sold || false;
 

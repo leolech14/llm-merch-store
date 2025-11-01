@@ -17,6 +17,7 @@ import {
   BarChart3,
   TestTube2,
   Brain,
+  Package,
 } from "lucide-react";
 
 /**
@@ -255,6 +256,25 @@ export default function AdminPanel() {
             value={metrics?.totalSales || 0}
             color="rose"
           />
+        </div>
+
+        {/* Orders Quick Access */}
+        <div className="bg-card rounded-xl p-6 border">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Package className="w-6 h-6 text-primary" />
+              Orders Management
+            </h2>
+            <button
+              onClick={() => window.location.href = '/admin/orders'}
+              className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
+            >
+              View All Orders
+            </button>
+          </div>
+          <p className="text-muted-foreground">
+            View and manage customer orders, update fulfillment status, and export orders to CSV for manufacturing.
+          </p>
         </div>
 
         {/* System Controls */}
