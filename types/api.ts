@@ -77,3 +77,13 @@ export interface TelemetryResponse {
   success: boolean;
   telemetry?: any;
 }
+
+// Order Management Types
+export type {
+  OrderItem,
+  ShippingAddress,
+  FulfillmentStatus,
+  Order,
+  OrderListResponse,
+  OrderExportData
+} from './orders';

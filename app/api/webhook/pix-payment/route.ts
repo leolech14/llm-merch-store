@@ -265,6 +265,15 @@ export async function POST(request: NextRequest) {
       await logTransaction(order);
       console.log(`[${requestId}] Transaction logged:`, orderId);
 
+      // Send email notification
+      try {
+        const { sendOrderNotification } = await import('@/lib/email-service');
+        await sendOrderNotification(order as any);
+      } catch (emailError) {
+        console.error(`[${requestId}] Email notification failed:`, emailError);
+        // Continue - don't block order confirmation
+      }
+
       // Success response
       return NextResponse.json(
         {
