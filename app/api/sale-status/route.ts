@@ -48,6 +48,14 @@ export async function GET() {
   const startTimeServer = new Date(startTime.getTime() - offsetDiff);
   const endTimeServer = new Date(endTime.getTime() - offsetDiff);
 
+  // TEST MODE: Allow purchases before countdown ends
+  // Set TEST_MODE=true in Vercel to enable
+  const TEST_MODE = process.env.TEST_MODE === 'true';
+
+  if (TEST_MODE) {
+    console.log('[Sale Status] TEST MODE ENABLED - Sale is always active');
+  }
+
   let status: 'before' | 'during' | 'after';
   let isActive = false;
   let timeUntilStart: number | undefined;
@@ -56,7 +64,7 @@ export async function GET() {
   if (now < startTimeServer) {
     // Before sale
     status = 'before';
-    isActive = false;
+    isActive = TEST_MODE; // ✅ TEST MODE: Allow purchases even before countdown
     timeUntilStart = startTimeServer.getTime() - now.getTime();
   } else if (now >= startTimeServer && now < endTimeServer) {
     // During sale - ACTIVE!
@@ -66,7 +74,7 @@ export async function GET() {
   } else {
     // After sale
     status = 'after';
-    isActive = false;
+    isActive = TEST_MODE; // ✅ TEST MODE: Keep active even after sale ends
   }
 
   const response: SaleStatus = {
