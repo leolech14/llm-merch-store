@@ -935,32 +935,7 @@ function LLMClothingWebsite() {
           </div>
         </section>
 
-        {/* Pricing/Products Section */}
-        <section id="pricing" className="py-20 border-b border-border">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Featured Collection</h2>
-              <p className="text-xl text-muted-foreground">Limited edition designs for Halloween and beyond</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {products.map((product: any, index: number) => {
-                const productKey = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                const isSold = inventory?.products?.[productKey]?.sold || false;
-
-                return (
-                  <div key={index} className="flex justify-center">
-                    <ProductCard
-                      {...product}
-                      isSold={isSold}
-                      isSaleActive={saleStatus?.isActive || false}
-                      productId={productKey}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        {/* REMOVED: Featured Collection - Redundant with Scoreboard below */}
 
         {/* AI Models Showcase - HIGHLIGHTED */}
         <section className="py-32 bg-black border-y-4 border-white">
@@ -1109,98 +1084,8 @@ function LLMClothingWebsite() {
           </section>
         )}
 
-        {/* Testimonials Section */}
-        <section id="testimonials" className="py-20 border-b border-border">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">What AI has to say</h2>
-              <p className="text-xl text-muted-foreground">Reviews from the world's most capable AI models</p>
-            </div>
-            <div className="max-w-4xl mx-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentTestimonial}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.1 }}
-                  className="text-center"
-                >
-                  <div className="mb-6 flex justify-center">
-                    <div className="w-20 h-20 bg-muted/50 border-2 border-primary flex items-center justify-center text-4xl overflow-hidden">
-                      {testimonials[currentTestimonial].avatar.startsWith('/') ? (
-                        <img
-                          src={testimonials[currentTestimonial].avatar}
-                          alt={testimonials[currentTestimonial].name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        testimonials[currentTestimonial].avatar
-                      )}
-                    </div>
-                  </div>
-                  <p className="text-xl md:text-2xl mb-6 text-foreground italic">&quot;{testimonials[currentTestimonial].review}&quot;</p>
-                  <h4 className="font-semibold text-lg">{testimonials[currentTestimonial].name}</h4>
-                  <p className="text-muted-foreground">{testimonials[currentTestimonial].role}</p>
-                </motion.div>
-              </AnimatePresence>
-              <div className="flex justify-center items-center gap-6 mt-8">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-                  className=""
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </Button>
-                <div className="flex gap-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentTestimonial(index)}
-                      className={cn(
-                        "w-2 h-2  transition-all",
-                        index === currentTestimonial ? "bg-primary w-8" : "bg-primary/30"
-                      )}
-                    />
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)}
-                  className=""
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Proof Section (QR Code) */}
-        <section id="proof" className="py-20 border-b border-border">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Scan & Connect</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Every piece features a QR code on the back. Scan it at parties to share our collection instantly!
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <div className="p-8 bg-white/5 border-2 border-white/20  backdrop-blur-sm">
-                <img
-                  src="/qr-code.png"
-                  alt="QR Code - llmmerch.space"
-                  className="w-64 h-64 md:w-80 md:h-80"
-                />
-                <p className="mt-6 text-center text-sm text-white/70 font-mono">
-                  Scan to visit • llmmerch.space
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* REMOVED: AI Testimonials - Gimmicky fake reviews */}
+        {/* REMOVED: QR Code Section - Redundant (already in header) */}
 
         {/* FAQ Section */}
         <section id="faq" className="py-20 border-b border-border bg-muted/30">

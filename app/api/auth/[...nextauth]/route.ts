@@ -8,11 +8,11 @@ import GoogleProvider from "next-auth/providers/google";
  * Only admins get access to /admin panel and controls
  */
 
-// Admin email whitelist
-const ADMIN_EMAILS = [
-  "leonardo.lech@gmail.com",  // Main admin
-  "leo@lbldomain.com",         // Secondary admin
-];
+// Admin email whitelist - Load from environment variable
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "leonardo.lech@gmail.com,leo@lbldomain.com")
+  .split(",")
+  .map(email => email.trim())
+  .filter(Boolean);
 
 export const authOptions: NextAuthOptions = {
   providers: [

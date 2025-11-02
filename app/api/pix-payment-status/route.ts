@@ -48,14 +48,18 @@ export async function POST(request: NextRequest) {
       hash: paymentHash,
     };
 
-    // Call EBANX sandbox API
+    // Call EBANX sandbox API with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
     const ebanxResponse = await fetch('https://sandbox.ebanx.com/ws/direct', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(ebanxPayload),
-    });
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     if (!ebanxResponse.ok) {
       console.error('EBANX API error:', ebanxResponse.status, await ebanxResponse.text());

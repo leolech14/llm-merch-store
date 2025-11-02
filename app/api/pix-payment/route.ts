@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
       operation: 'request',
       payment: {
         name: buyerName || 'Customer',
-        email: buyerEmail || `customer@llmmerch.local`,
-        document: '00000000000000', // Placeholder - would be collected from user in production
+        email: buyerEmail || `customer-${Date.now()}@llmmerch.space`,
+        document: '00000000000191', // Valid CPF format for EBANX sandbox (Mod-11 validated)
         country: 'br',
         payment_type_code: 'pix',
         merchant_payment_code: `${productId}-${Date.now()}`,
@@ -67,14 +67,18 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Call EBANX sandbox API
+    // Call EBANX sandbox API with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
     const ebanxResponse = await fetch('https://sandbox.ebanx.com/ws/direct', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(ebanxPayload),
-    });
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     if (!ebanxResponse.ok) {
       console.error('EBANX API error:', ebanxResponse.status, await ebanxResponse.text());

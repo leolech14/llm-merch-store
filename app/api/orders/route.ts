@@ -264,12 +264,13 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
  * CORS preflight handler
  */
 export async function OPTIONS(): Promise<NextResponse> {
+  const allowedOrigins = process.env.NEXT_PUBLIC_SITE_URL || 'https://llmmerch.space';
   return NextResponse.json(
     {},
     {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': allowedOrigins,
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
       }

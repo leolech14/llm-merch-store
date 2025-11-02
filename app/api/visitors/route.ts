@@ -5,7 +5,7 @@ import path from 'path';
 const VISITORS_FILE = path.join(process.cwd(), 'data', 'visitors.json');
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_SITE_URL || 'https://llmmerch.space',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };

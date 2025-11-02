@@ -1,6 +1,6 @@
 {
-  "totalVisitors": 712,
-  "totalPageViews": 1429,
+  "totalVisitors": 714,
+  "totalPageViews": 1431,
   "productClicks": {
     "Fluffy Creature Layers Tee": 91,
     "Large Language Model (Brunette)": 76,
@@ -18,8 +18,24 @@
   "addToCartEvents": 89,
   "totalSales": 0,
   "totalProducts": 24,
-  "lastUpdated": "2025-11-01T00:53:01.451Z",
+  "lastUpdated": "2025-11-02T00:18:51.003Z",
   "recentEvents": [
+    {
+      "type": "page_view",
+      "timestamp": "2025-11-02T00:18:51.003Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-11-02T00:18:50.999Z"
+    },
+    {
+      "type": "page_view",
+      "timestamp": "2025-11-01T23:02:28.454Z"
+    },
+    {
+      "type": "visitor",
+      "timestamp": "2025-11-01T23:02:28.449Z"
+    },
     {
       "type": "page_view",
       "timestamp": "2025-11-01T00:53:01.451Z"
@@ -203,22 +219,6 @@
     {
       "type": "visitor",
       "timestamp": "2025-10-31T15:22:01.716Z"
-    },
-    {
-      "type": "page_view",
-      "timestamp": "2025-10-31T15:18:01.967Z"
-    },
-    {
-      "type": "visitor",
-      "timestamp": "2025-10-31T15:18:01.961Z"
-    },
-    {
-      "type": "page_view",
-      "timestamp": "2025-10-31T15:13:19.470Z"
-    },
-    {
-      "type": "visitor",
-      "timestamp": "2025-10-31T15:13:19.447Z"
     }
   ]
 }
