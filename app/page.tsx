@@ -935,7 +935,32 @@ function LLMClothingWebsite() {
           </div>
         </section>
 
-        {/* REMOVED: Featured Collection - Redundant with Scoreboard below */}
+        {/* Featured Collection - Product Cards Grid */}
+        <section id="products" className="py-20 border-b border-border">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Featured Collection</h2>
+              <p className="text-xl text-muted-foreground">Limited edition designs for Halloween and beyond</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {products.map((product: any, index: number) => {
+                const productKey = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const isSold = inventory?.products?.[productKey]?.sold || false;
+
+                return (
+                  <div key={index} className="flex justify-center">
+                    <ProductCard
+                      {...product}
+                      isSold={isSold}
+                      isSaleActive={saleStatus?.isActive || false}
+                      productId={productKey}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
 
         {/* AI Models Showcase - HIGHLIGHTED */}
         <section className="py-32 bg-black border-y-4 border-white">
