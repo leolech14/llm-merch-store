@@ -1101,6 +1101,7 @@ function LLMClothingWebsite() {
             <div className="container mx-auto px-4">
               <Scoreboard
                 inventory={inventory}
+                products={allProducts}
                 marketPrices={marketPrices || undefined}
                 onMakeOffer={handleMakeOffer}
                 onAddToCart={handleAddToCart}

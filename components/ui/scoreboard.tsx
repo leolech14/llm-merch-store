@@ -4,19 +4,34 @@ import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 import type { Inventory, MarketPrices } from "@/types/api"
 
+interface Product {
+  name: string;
+  images: string[];
+  price: number;
+  [key: string]: any;
+}
+
 interface ScoreboardProps {
   inventory: Inventory;
+  products?: Product[];
   marketPrices?: MarketPrices;
   onMakeOffer?: (productId: string, productName: string, price: number) => void;
   onAddToCart?: (productId: string, productName: string, price: number, image: string) => void;
 }
 
-export function Scoreboard({ inventory, marketPrices, onMakeOffer, onAddToCart }: ScoreboardProps) {
+export function Scoreboard({ inventory, products: catalogProducts, marketPrices, onMakeOffer, onAddToCart }: ScoreboardProps) {
   const [expandedTrades, setExpandedTrades] = useState<Set<string>>(new Set())
 
   if (!inventory || !inventory.products) {
     return null
   }
+
+  // Create a map of product names to catalog data for image lookup
+  const catalogMap = catalogProducts?.reduce((acc, p) => {
+    const key = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    acc[key] = p;
+    return acc;
+  }, {} as Record<string, Product>) || {};
 
   const products = Object.entries(inventory.products).map(([id, product]) => ({
     id,
@@ -66,14 +81,23 @@ export function Scoreboard({ inventory, marketPrices, onMakeOffer, onAddToCart }
               <div className="flex items-center gap-3 p-2">
                 {/* Thumbnail */}
                 <div className="w-12 h-12 bg-white/10 border border-white/20">
-                  <img
-                    src={`/images/${product.id.toLowerCase().replace(/\s+/g, '-')}.jpg`}
-                    alt={product.name}
-                    className="w-full h-full object-cover grayscale"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
+                  {(() => {
+                    const catalogProduct = catalogMap[product.id];
+                    const imageSrc = catalogProduct?.images?.[0]
+                      ? `/images/${catalogProduct.images[0]}`
+                      : `/images/${product.id.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+
+                    return (
+                      <img
+                        src={imageSrc}
+                        alt={product.name}
+                        className="w-full h-full object-cover grayscale"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    );
+                  })()}
                 </div>
 
                 {/* Info */}
