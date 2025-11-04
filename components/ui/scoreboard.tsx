@@ -83,10 +83,9 @@ export function Scoreboard({ inventory, products: catalogProducts, marketPrices,
                 <div className="w-12 h-12 bg-white/10 border border-white/20">
                   {(() => {
                     const catalogProduct = catalogMap[product.id];
-                    // catalogProduct.images already includes the filename (e.g., "chat-01-ask-anything.jpg")
+                    // catalogProduct.images already includes /images/ prefix from page.tsx
                     const imageSrc = catalogProduct?.images?.[0]
-                      ? `/images/${catalogProduct.images[0]}`
-                      : `/images/${product.id}.jpg`;
+                      || `/images/${product.id}.jpg`;
 
                     return (
                       <img
