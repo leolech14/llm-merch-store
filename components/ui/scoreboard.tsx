@@ -70,6 +70,12 @@ export function Scoreboard({ inventory, products: catalogProducts, marketPrices,
           const isExpanded = expandedTrades.has(product.id);
           const currentPrice = marketPrice?.highestOffer || 149;
 
+          // Normalize product name to match catalogMap keys
+          const normalizedKey = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const catalogProduct = catalogMap[normalizedKey];
+          // catalogProduct.images already includes /images/ prefix from page.tsx
+          const imageSrc = catalogProduct?.images?.[0] || `/images/${product.id}.jpg`;
+
           const tradeHistory = hasOffers ? [
             { price: 149, buyer: "anon_001", date: "2d ago" },
             { price: currentPrice, buyer: product.collectorNickname || "anon_002", date: "1d ago" },
@@ -81,23 +87,14 @@ export function Scoreboard({ inventory, products: catalogProducts, marketPrices,
               <div className="flex items-center gap-3 p-2">
                 {/* Thumbnail */}
                 <div className="w-12 h-12 bg-white/10 border border-white/20">
-                  {(() => {
-                    const catalogProduct = catalogMap[product.id];
-                    // catalogProduct.images already includes /images/ prefix from page.tsx
-                    const imageSrc = catalogProduct?.images?.[0]
-                      || `/images/${product.id}.jpg`;
-
-                    return (
-                      <img
-                        src={imageSrc}
-                        alt={product.name}
-                        className="w-full h-full object-cover grayscale"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    );
-                  })()}
+                  <img
+                    src={imageSrc}
+                    alt={product.name}
+                    className="w-full h-full object-cover grayscale"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
                 </div>
 
                 {/* Info */}
@@ -123,7 +120,7 @@ export function Scoreboard({ inventory, products: catalogProducts, marketPrices,
 
                 {/* Add to Cart */}
                 <button
-                  onClick={() => onAddToCart?.(product.id, product.name, currentPrice, `/images/products/${product.id}.png`)}
+                  onClick={() => onAddToCart?.(product.id, product.name, currentPrice, imageSrc)}
                   className="px-3 py-1.5 text-xs font-bold text-white bg-black border border-white/40 hover:bg-white hover:text-black transition-colors"
                   title="Add to cart"
                 >
