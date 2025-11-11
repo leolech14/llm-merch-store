@@ -373,21 +373,21 @@ function ProductCard({
           variant={isSold ? "destructive" : "default"}
         >
           {isSold ? (
-            "ESGOTADO"
+            "SOLD OUT"
           ) : !isSaleActive ? (
-            "Venda Inativa"
+            "Sale Inactive"
           ) : isAddingToCart ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Adicionando...
+              Adding...
             </>
           ) : isAddedToCart ? (
             <>
               <Check className="mr-2 h-4 w-4" />
-              Adicionado!
+              Added!
             </>
           ) : (
-            "Compra Rápida"
+            "Quick Buy"
           )}
         </Button>
       </CardContent>

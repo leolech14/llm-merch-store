@@ -511,7 +511,7 @@ function HeroMinimal({ visitorCount, saleStatus, onCTAClick }: HeroProps) {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/70 font-mono">
-            ACTUALLY WORKS!
+            Cognitive Fashion That Makes Sense
           </p>
         </div>
 
