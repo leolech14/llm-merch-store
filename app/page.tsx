@@ -24,7 +24,10 @@ import {
   Instagram,
   Linkedin,
   User,
-  LogOut
+  LogOut,
+  Brain,
+  Shield,
+  Users
 } from "lucide-react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { Slot } from "@radix-ui/react-slot";
@@ -908,7 +911,7 @@ function LLMClothingWebsite() {
                 className="text-center p-6  bg-muted/50 hover:bg-muted transition-colors animate-in fade-in duration-300"
               >
                 <div className="w-16 h-16 mx-auto mb-4  bg-primary/10 flex items-center justify-center">
-                  <Zap className="w-8 h-8 text-primary" />
+                  <Brain className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Actually Educational</h3>
                 <p className="text-white/70">Real transformer diagrams. Actual neural network flows. <span className="text-white font-semibold">Wear & learn.</span> Not just looking smart—getting smarter.</p>
@@ -917,7 +920,7 @@ function LLMClothingWebsite() {
                 className="text-center p-6  bg-muted/50 hover:bg-muted transition-colors animate-in fade-in duration-300"
               >
                 <div className="w-16 h-16 mx-auto mb-4  bg-primary/10 flex items-center justify-center">
-                  <Star className="w-8 h-8 text-primary" />
+                  <Shield className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Zero Chip Guarantee</h3>
                 <p className="text-muted-foreground">100% organic fabric. No sensors. No tracking. No AI chips. Just pure cotton and neural network diagrams. Retro AF.</p>
@@ -926,7 +929,7 @@ function LLMClothingWebsite() {
                 className="text-center p-6  bg-muted/50 hover:bg-muted transition-colors animate-in fade-in duration-300"
               >
                 <div className="w-16 h-16 mx-auto mb-4  bg-primary/10 flex items-center justify-center">
-                  <ShoppingCart className="w-8 h-8 text-primary" />
+                  <Users className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Sk8 Bar Approved</h3>
                 <p className="text-muted-foreground">Tested at skateboard bars with actual bowls. Conversation starters. QR codes scannable mid-trick. Culture approved.</p>
