@@ -1,0 +1,360 @@
+{
+  "products": [
+    {
+      "id": "self-attention-007",
+      "name": "Self-Attention Tee",
+      "category": "Attention Mechanisms",
+      "tagline": "Focus on yourself",
+      "description": "Self-attention visualization. The core mechanism that makes transformers work.",
+      "price": 34.99,
+      "images": ["attention-01-self.jpg"],
+      "placement": "center",
+      "tags": ["transformer", "attention", "technical", "graph"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "cross-attention-006",
+      "name": "Cross-Attention Tee",
+      "category": "Attention Mechanisms",
+      "tagline": "Connect the dots",
+      "description": "Cross-attention mechanism showing how transformers connect encoder and decoder. For the technically minded.",
+      "price": 34.99,
+      "images": ["attention-02-cross.jpg"],
+      "placement": "center",
+      "tags": ["transformer", "attention", "technical", "architecture"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "query-key-008",
+      "name": "Query-Key Matrix Tee",
+      "category": "Attention Mechanisms",
+      "tagline": "The math behind attention",
+      "description": "Query and Key matrices with actual numerical values. For those who love the technical details.",
+      "price": 36.99,
+      "images": ["attention-03-query-key.jpg"],
+      "placement": "center",
+      "tags": ["transformer", "attention", "matrix", "math"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "value-009",
+      "name": "Value Matrix Tee",
+      "category": "Attention Mechanisms",
+      "tagline": "Show your values",
+      "description": "Attention value matrix with color-coded numbers. Complete the QKV trinity.",
+      "price": 36.99,
+      "images": ["attention-04-value.jpg"],
+      "placement": "center",
+      "tags": ["transformer", "attention", "matrix", "math"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "backprop-blue-004",
+      "name": "Back-Propagation (Blue)",
+      "category": "Neural Networks",
+      "tagline": "Learn in style",
+      "description": "Neural network training visualization in cool blue tones. Shows the flow from input to output through hidden layers.",
+      "price": 34.99,
+      "images": ["backprop-01-blue.jpg"],
+      "placement": "center",
+      "tags": ["neural-network", "deep-learning", "technical", "training"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "backprop-red-005",
+      "name": "Back-Propagation (Red)",
+      "category": "Neural Networks",
+      "tagline": "Training never looked so hot",
+      "description": "Neural network training visualization in fiery red/orange tones. Perfect for ML engineers.",
+      "price": 34.99,
+      "images": ["backprop-02-red.jpg"],
+      "placement": "center",
+      "tags": ["neural-network", "deep-learning", "technical", "training"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "ask-anything-001",
+      "name": "Ask Anything Tee",
+      "category": "Interactive",
+      "tagline": "Voice-activated style",
+      "description": "Minimalist microphone icon with 'Ask anything' text. Perfect for AI enthusiasts who live in voice mode.",
+      "price": 29.99,
+      "images": ["chat-01-ask-anything.jpg"],
+      "placement": "chest",
+      "tags": ["voice", "ai", "minimalist", "chatgpt"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "chatgpt-pro-002",
+      "name": "ChatGPT 5 Pro Tee",
+      "category": "Interactive",
+      "tagline": "Pro-level AI fashion",
+      "description": "ChatGPT 5 Pro branding with voice icon. Show you're an advanced AI user.",
+      "price": 32.99,
+      "images": ["chat-02-gpt-pro.jpg"],
+      "placement": "center",
+      "tags": ["chatgpt", "voice", "pro", "ai"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "mic-small-003",
+      "name": "Mic Icon Tee",
+      "category": "Interactive",
+      "tagline": "Subtle AI vibes",
+      "description": "Small microphone icon on chest. For those who prefer understated tech style.",
+      "price": 27.99,
+      "images": ["chat-03-mic-icon.jpg"],
+      "placement": "chest-small",
+      "tags": ["voice", "minimalist", "subtle"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "fluffy-creature-011",
+      "name": "Fluffy Creature Layers Tee",
+      "category": "Fun & Mascots",
+      "tagline": "Cute meets compute",
+      "description": "Adorable fluffy creatures showing transformer layer stack. Technical concepts, made cute.",
+      "price": 32.99,
+      "images": ["cute-01-fluffy-single.jpg"],
+      "placement": "center",
+      "tags": ["cute", "transformer", "layers", "mascot"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "featured": true
+    },
+    {
+      "id": "fluffy-creature-y-012",
+      "name": "Fluffy Creature Y Tee",
+      "category": "Fun & Mascots",
+      "tagline": "Y is for why not?",
+      "description": "Another adorable take on transformer architecture with fluffy mascots.",
+      "price": 32.99,
+      "images": ["cute-02-fluffy-y.jpg"],
+      "placement": "center",
+      "tags": ["cute", "transformer", "mascot", "fun"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "llm-blonde-color-015",
+      "name": "Large Language Model (Blonde)",
+      "category": "Statement Pieces",
+      "tagline": "Golden intelligence",
+      "description": "Blonde variant of the LLM surfing design with vibrant colors.",
+      "price": 39.99,
+      "images": ["llm-01-blonde-color.jpg"],
+      "placement": "center",
+      "tags": ["llm", "statement", "artistic", "bold"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "llm-blonde-bw-016",
+      "name": "Large Language Model B&W (Blonde)",
+      "category": "Statement Pieces",
+      "tagline": "Monochrome elegance",
+      "description": "Black and white blonde variant. Sophisticated and timeless.",
+      "price": 39.99,
+      "images": ["llm-02-blonde-bw.jpg"],
+      "placement": "center",
+      "tags": ["llm", "statement", "artistic", "monochrome"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "llm-brunette-color-013",
+      "name": "Large Language Model (Brunette)",
+      "category": "Statement Pieces",
+      "tagline": "Ride the wave",
+      "description": "Bold statement piece featuring a model surfing on a language wave. Vibrant pink/red design.",
+      "price": 39.99,
+      "images": ["llm-03-brunette-color.jpg", "llm-06-brunette-alt.jpg"],
+      "placement": "center",
+      "tags": ["llm", "statement", "artistic", "bold"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "featured": true
+    },
+    {
+      "id": "llm-brunette-bw-014",
+      "name": "Large Language Model B&W (Brunette)",
+      "category": "Statement Pieces",
+      "tagline": "Classic monochrome",
+      "description": "Black and white version of the iconic LLM surfing design. Timeless style.",
+      "price": 39.99,
+      "images": ["llm-05-brunette-bw.jpg", "llm-04-brunette-med.jpg"],
+      "placement": "center",
+      "tags": ["llm", "statement", "artistic", "monochrome"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "info-theory-019",
+      "name": "Information Theory Tee",
+      "category": "Information Theory",
+      "tagline": "Networks never looked so good",
+      "description": "Graph network showing information theory concepts. For the mathematically inclined.",
+      "price": 31.99,
+      "images": ["network-01-info-theory.jpg"],
+      "placement": "center",
+      "tags": ["network", "graph", "information", "theory"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "gossip-018",
+      "name": "Gossip Network Tee",
+      "category": "Information Theory",
+      "tagline": "Spread the knowledge",
+      "description": "Minimalist constellation showing information spreading through networks. Subtle and elegant.",
+      "price": 31.99,
+      "images": ["network-02-gossip.jpg"],
+      "placement": "center",
+      "tags": ["network", "graph", "minimalist", "information"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "circular-graph-021",
+      "name": "Circular Node Graph Tee",
+      "category": "Information Theory",
+      "tagline": "Full circle intelligence",
+      "description": "Full-size circular node graph. Perfect visualization of interconnected systems.",
+      "price": 33.99,
+      "images": ["network-03-circular.jpg"],
+      "placement": "center",
+      "tags": ["network", "graph", "circular", "nodes"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "circular-graph-small-022",
+      "name": "Circular Node Graph (Small)",
+      "category": "Information Theory",
+      "tagline": "Subtle connections",
+      "description": "Small chest placement version of the circular graph. Understated elegance.",
+      "price": 29.99,
+      "images": ["network-04-circular-sm.jpg"],
+      "placement": "chest-small",
+      "tags": ["network", "graph", "circular", "subtle"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "data-cube-023",
+      "name": "Data Cloud Cube Tee",
+      "category": "Data Science",
+      "tagline": "3D data visualization",
+      "description": "Abstract data cloud cube. Represents multidimensional data spaces.",
+      "price": 33.99,
+      "images": ["network-05-data-cube.jpg"],
+      "placement": "center",
+      "tags": ["data", "visualization", "3d", "abstract"],
+      "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+    {
+      "id": "fresh-models-017",
+      "name": "Fresh Models Tee",
+      "category": "Statement Pieces",
+      "tagline": "Always updating",
+      "description": "\"Always looking for fresh models\" - The perfect double entendre for AI researchers.",
+      "price": 29.99,
+      "images": ["text-01-fresh-models.jpg"],
+      "placement": "center",
+      "tags": ["text", "humor", "llm", "witty"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "featured": true
+    },
+    {
+      "id": "paris-city-024",
+      "name": "Paris is a City Tee",
+      "category": "Embeddings & Tokens",
+      "tagline": "Semantic understanding",
+      "description": "Shows how LLMs understand context: 'Paris is a city in ____'. Features embedding visualization on the back.",
+      "price": 36.99,
+      "images": ["text-02-paris-city.jpg"],
+      "placement": "front-back",
+      "tags": ["embeddings", "nlp", "context", "educational"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "hasFrontBack": true
+    },
+    {
+      "id": "tunable-params-025",
+      "name": "Tunable Parameters Tee",
+      "category": "Model Training",
+      "tagline": "Fine-tune everything",
+      "description": "Array of tunable parameter dials. Because every ML engineer loves hyperparameter tuning.",
+      "price": 34.99,
+      "images": ["text-03-tunable-params.jpg"],
+      "placement": "front-back",
+      "tags": ["parameters", "training", "tuning", "technical"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "hasFrontBack": true
+    },
+    {
+      "id": "transformer-010",
+      "name": "Transformer Architecture Tee",
+      "category": "Architecture",
+      "tagline": "The full stack",
+      "description": "Complete transformer architecture diagram with encoder and decoder. The iconic AI architecture.",
+      "price": 39.99,
+      "images": ["transformer-01-full.jpg"],
+      "placement": "center",
+      "tags": ["transformer", "architecture", "technical", "detailed"],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "featured": true
+    }
+  ],
+  "categories": [
+    {
+      "id": "interactive",
+      "name": "Interactive",
+      "description": "Voice-activated designs for the AI-first generation"
+    },
+    {
+      "id": "neural-networks",
+      "name": "Neural Networks",
+      "description": "Deep learning architectures visualized"
+    },
+    {
+      "id": "attention-mechanisms",
+      "name": "Attention Mechanisms",
+      "description": "The magic behind transformers"
+    },
+    {
+      "id": "architecture",
+      "name": "Architecture",
+      "description": "Complete system diagrams"
+    },
+    {
+      "id": "fun-mascots",
+      "name": "Fun & Mascots",
+      "description": "Cute meets compute"
+    },
+    {
+      "id": "statement-pieces",
+      "name": "Statement Pieces",
+      "description": "Bold, artistic designs"
+    },
+    {
+      "id": "information-theory",
+      "name": "Information Theory",
+      "description": "Networks and graphs"
+    },
+    {
+      "id": "data-science",
+      "name": "Data Science",
+      "description": "Visualizing data spaces"
+    },
+    {
+      "id": "embeddings-tokens",
+      "name": "Embeddings & Tokens",
+      "description": "How LLMs understand language"
+    },
+    {
+      "id": "model-training",
+      "name": "Model Training",
+      "description": "Training and optimization"
+    }
+  ],
+  "metadata": {
+    "totalProducts": 24,
+    "totalDesigns": 27,
+    "priceRange": {
+      "min": 27.99,
+      "max": 39.99
+    },
+    "currency": "USD",
+    "shippingNote": "Free shipping on orders over $50"
+  }
+}

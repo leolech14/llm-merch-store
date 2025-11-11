@@ -27,7 +27,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
 
         {/* Main Headline - Long, direct, hilarious */}
         <motion.h1
-          className="text-xl md:text-xl lg:text-xl font-black tracking-tight leading-tight"
+          className="text-2xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -39,7 +39,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
 
         {/* The punchline */}
         <motion.p
-          className="text-xl md:text-xl font-mono text-white/70"
+          className="text-lg md:text-xl font-mono text-white/70"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -57,7 +57,7 @@ export function HeroAIFailure({ visitorCount, saleStatus, onCTAClick }: HeroAIFa
 
         {/* Subtext - Explanation */}
         <motion.p
-          className="text-base md:text-lg text-white/60 max-w-2xl mx-auto"
+          className="text-sm md:text-base text-white/60 max-w-2xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.9 }}

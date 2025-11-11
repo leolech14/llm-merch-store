@@ -30,7 +30,7 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
           {stage === 'experiment' && (
             <motion.h1
               key="exp"
-              className="text-xl md:text-7xl font-bold tracking-tight absolute inset-0 flex flex-col items-center justify-center"
+              className="text-4xl md:text-6xl font-bold tracking-tight absolute inset-0 flex flex-col items-center justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -42,7 +42,7 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
               <span className="block line-through text-muted-foreground/50 text-xl md:text-xl mb-2">
                 THIS IS A STORE
               </span>
-              <span className="block text-foreground text-xl md:text-7xl">
+              <span className="block text-foreground text-4xl md:text-6xl">
                 THIS IS AN EXPERIMENT
               </span>
             </motion.h1>
@@ -51,7 +51,7 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
           {stage === 'metoo' && (
             <motion.h1
               key="mt"
-              className="text-xl md:text-8xl font-black text-white cursor-pointer absolute inset-0 flex items-center justify-center"
+              className="text-5xl md:text-7xl font-black text-white cursor-pointer absolute inset-0 flex items-center justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -65,7 +65,7 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
           {stage === 'dontcare' && (
             <motion.h1
               key="dc"
-              className="text-xl md:text-8xl font-black text-white absolute inset-0 flex items-center justify-center"
+              className="text-5xl md:text-7xl font-black text-white absolute inset-0 flex items-center justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
@@ -112,7 +112,7 @@ export function HeroStrikethrough({ visitorCount, saleStatus, onCTAClick }: Hero
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="text-xl md:text-xl font-mono text-white/50 italic">
+              <p className="text-lg md:text-2xl font-mono text-white/50 italic">
                 so cringy
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
