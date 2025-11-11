@@ -976,7 +976,7 @@ function LLMClothingWebsite() {
               <div className="grid md:grid-cols-2 gap-12">
                 <div className="border-4 border-white p-8 bg-white/5">
                   <img
-                    src="/images/llm-03-brunette-color.jpg"
+                    src="/images/LLM-Brunnette.png"
                     alt="LLM Brunette Color"
                     className="w-full h-auto mb-6"
                   />
@@ -985,14 +985,14 @@ function LLMClothingWebsite() {
                     <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Full Color Edition</p>
                     <div className="pt-4">
                       <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
-                        SIGNATURE PIECE
+                        R$159 • SIGNATURE PIECE
                       </span>
                     </div>
                   </div>
                 </div>
                 <div className="border-4 border-white p-8 bg-white/5">
                   <img
-                    src="/images/llm-01-blonde-color.jpg"
+                    src="/images/LLM-Blonde.png"
                     alt="LLM Blonde Color"
                     className="w-full h-auto mb-6"
                   />
@@ -1001,7 +1001,7 @@ function LLMClothingWebsite() {
                     <p className="text-sm text-white/70 font-mono uppercase tracking-wider">Full Color Edition</p>
                     <div className="pt-4">
                       <span className="inline-block px-4 py-2 bg-white text-black font-bold text-xs">
-                        SIGNATURE PIECE
+                        R$159 • SIGNATURE PIECE
                       </span>
                     </div>
                   </div>
