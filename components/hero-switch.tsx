@@ -84,6 +84,19 @@ export function HeroSwitch({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [currentIndex, variants]);
 
+  // Auto-rotate every 15 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % variants.length;
+      const nextVariant = variants[nextIndex];
+      setActiveVariant(nextVariant);
+      localStorage.setItem('hero_variant', nextVariant);
+      trackHeroView(nextVariant, 'auto_rotate');
+    }, 15000); // 15 seconds
+
+    return () => clearInterval(interval);
+  }, [currentIndex, variants]);
+
   // Determine variant on mount
   useEffect(() => {
     // 1. Check URL param first

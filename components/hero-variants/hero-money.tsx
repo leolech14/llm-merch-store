@@ -34,7 +34,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
         <div className="space-y-2">
           {/* Line 1: TALK SHIT (strikethrough, 50% opacity) */}
           <motion.h1
-            className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tight line-through opacity-50 text-white/50"
+            className="text-xl md:text-8xl lg:text-9xl font-black tracking-tight line-through opacity-50 text-white/50"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 0.5 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -44,7 +44,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
 
           {/* Line 2: MAKE MONEY */}
           <motion.h1
-            className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tight text-white"
+            className="text-xl md:text-8xl lg:text-9xl font-black tracking-tight text-white"
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -127,7 +127,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
         >
           {/* Prop 1 */}
           <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg">
-            <div className="text-3xl font-bold text-white mb-2">1/31</div>
+            <div className="text-xl font-bold text-white mb-2">1/31</div>
             <div className="text-sm font-medium text-white">Scarcity = Value</div>
             <div className="text-xs text-white/60 mt-1">
               Only one exists. Ever.
@@ -136,7 +136,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
 
           {/* Prop 2 */}
           <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg">
-            <div className="text-3xl font-bold text-white mb-2">P2P</div>
+            <div className="text-xl font-bold text-white mb-2">P2P</div>
             <div className="text-sm font-medium text-white">Resale Market</div>
             <div className="text-xs text-white/60 mt-1">
               Make offers, flip designs, collector economy
@@ -145,7 +145,7 @@ export function HeroMoney({ visitorCount, saleStatus, onCTAClick }: HeroMoneyPro
 
           {/* Prop 3 */}
           <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg">
-            <div className="text-3xl font-bold text-white mb-2">1500%</div>
+            <div className="text-xl font-bold text-white mb-2">1500%</div>
             <div className="text-sm font-medium text-white">Smarter (allegedly)</div>
             <div className="text-xs text-white mt-1 font-semibold">
               Wear & learn transformers

@@ -25,24 +25,24 @@ export function HeroNavigation({
       {/* Previous Button */}
       <button
         onClick={onPrevious}
-        className="w-6 h-6 flex items-center justify-center text-foreground/40 hover:text-foreground/80 transition-colors"
+        className="w-10 h-10 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-white/10 rounded-full transition-all"
         aria-label="Previous hero variant"
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
 
       {/* Counter - Minimal */}
-      <div className="text-[10px] font-mono text-foreground/30 tracking-wider">
+      <div className="text-xs font-mono text-foreground/50 tracking-wider px-2">
         {currentIndex + 1}/{totalVariants}
       </div>
 
       {/* Next Button */}
       <button
         onClick={onNext}
-        className="w-6 h-6 flex items-center justify-center text-foreground/40 hover:text-foreground/80 transition-colors"
+        className="w-10 h-10 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-white/10 rounded-full transition-all"
         aria-label="Next hero variant"
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-6 h-6" />
       </button>
     </motion.div>
   );

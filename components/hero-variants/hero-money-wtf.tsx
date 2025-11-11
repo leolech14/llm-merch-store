@@ -26,10 +26,10 @@ export function HeroMoneyWTF({ visitorCount, saleStatus, onCTAClick }: HeroMoney
         {/* Talk Shit / Make Money - WTF Context Styling */}
         <div>
           <h1 className="font-black tracking-tight leading-[0.95]">
-            <span className="block text-5xl md:text-7xl lg:text-8xl line-through decoration-white/70 decoration-8 opacity-50 text-white/50">
+            <span className="block text-xl md:text-7xl lg:text-8xl line-through decoration-white/70 decoration-8 opacity-50 text-white/50">
               talk shit
             </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl opacity-100 text-white mt-2">
+            <span className="block text-xl md:text-7xl lg:text-8xl opacity-100 text-white mt-2">
               make money
             </span>
           </h1>
